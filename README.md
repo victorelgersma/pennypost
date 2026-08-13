@@ -16,11 +16,9 @@ php artisan serve
 
 ```sh
 ssh hetzner
-```
-
-```sh
 cd /var/www/laravel.vjbe.net
 git pull
+npm run build
 ```
 ## About Laravel
 
