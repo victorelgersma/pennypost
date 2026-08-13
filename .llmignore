@@ -1,0 +1,13 @@
+
+database/database.sqlite
+vendor
+node_modules
+storage
+bootstrap
+public
+composer.lock
+package-lock.json
+vite.config.js
+tailwind.config.js
+postcss.config.js
+artisan

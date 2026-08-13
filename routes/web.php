@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UserSearchController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +20,10 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::get('/inbox', [MessageController::class, 'index'])->name('messages.inbox');
+Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
+Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
+Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+Route::get('/users/search', UserSearchController::class)->name('users.search');
