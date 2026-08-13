@@ -14,11 +14,12 @@ php artisan serve
 
 ## To deploy
 
+make sure the built files are in github (I don't have node on my server0)
+
 ```sh
 ssh hetzner
 cd /var/www/laravel.vjbe.net
 git pull
-npm run build
 ```
 ## About Laravel
 
