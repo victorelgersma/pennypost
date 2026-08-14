@@ -17,13 +17,17 @@ class Message extends Model
         'sender_id',
         'recipient_id',
         'body',
+        'is_draft',
         'scheduled_for',
+        'sent_at',
     ];
 
     protected function casts(): array
     {
         return [
+            'is_draft' => 'boolean',
             'scheduled_for' => 'immutable_datetime',
+            'sent_at' => 'immutable_datetime',
             'delivered_at' => 'immutable_datetime',
         ];
     }
@@ -43,6 +47,25 @@ class Message extends Model
         return $this->delivered_at !== null;
     }
 
+    /**
+     * The Friday 12:00 UTC cutoff before this message's Sunday batch —
+     * the same cutoff nextBatchFor() uses to decide which week a letter
+     * catches. A sealed letter can be unsealed back to a draft any time
+     * up until this point.
+     */
+    public function unsealDeadline(): ?CarbonImmutable
+    {
+        return $this->scheduled_for?->subDays(2);
+    }
+
+    public function canUnseal(): bool
+    {
+        return ! $this->is_draft
+            && ! $this->isDelivered()
+            && $this->unsealDeadline() !== null
+            && CarbonImmutable::now()->lessThanOrEqualTo($this->unsealDeadline());
+    }
+
     public function scopeDelivered(Builder $query): Builder
     {
         return $query->whereNotNull('delivered_at');
@@ -53,9 +76,19 @@ class Message extends Model
         return $query->whereNull('delivered_at');
     }
 
+    public function scopeDrafts(Builder $query): Builder
+    {
+        return $query->where('is_draft', true);
+    }
+
+    public function scopeSent(Builder $query): Builder
+    {
+        return $query->where('is_draft', false);
+    }
+
     public function scopeDue(Builder $query, ?CarbonInterface $asOf = null): Builder
     {
-        return $query->undelivered()->where('scheduled_for', '<=', $asOf ?? now());
+        return $query->sent()->undelivered()->where('scheduled_for', '<=', $asOf ?? now());
     }
 
     /**

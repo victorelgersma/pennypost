@@ -2,17 +2,163 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :root {
+        --paper: #F3EEE2;
+        --paper-card: #FBF8F1;
+        --ink: #211D18;
+        --ink-soft: #5B564C;
+        --stamp-red: #AF3029;
+        --stamp-red-dark: #7C221D;
+        --brass: #9C7A45;
+        --line: #D8D0BE;
+    }
+}
 
+@layer components {
+    .pp-serif {
+        font-family: 'Fraunces', ui-serif, Georgia, serif;
+    }
 
-.pp-brand-mark {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1.5px solid #F9F9F9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #F9F9F9;
-    font-size: 13px;
-    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    .pp-mono {
+        font-family: 'Space Mono', ui-monospace, monospace;
+        letter-spacing: .04em;
+    }
+
+    .pp-brand-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 9999px;
+        border: 1.5px solid var(--stamp-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--stamp-red);
+        font-size: 13px;
+    }
+
+    .pp-kicker {
+        font-size: 12px;
+        color: var(--stamp-red);
+        text-transform: uppercase;
+        letter-spacing: .14em;
+        font-weight: 700;
+    }
+
+    .pp-btn {
+        font-size: 14px;
+        padding: 9px 18px;
+        border-radius: 2px;
+        text-decoration: none;
+        border: 1px solid transparent;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .pp-btn-ghost {
+        color: var(--ink);
+        border-color: var(--line);
+        background: transparent;
+    }
+
+    .pp-btn-ghost:hover {
+        border-color: var(--ink);
+    }
+
+    .pp-btn-solid {
+        background: var(--stamp-red);
+        color: var(--paper-card);
+        border-color: var(--stamp-red);
+    }
+
+    .pp-btn-solid:hover {
+        background: var(--stamp-red-dark);
+        border-color: var(--stamp-red-dark);
+    }
+
+    .pp-letter-card {
+        background: var(--paper-card);
+        border: 1.5px solid var(--ink);
+        position: relative;
+    }
+
+    .pp-letter-card::before {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border: 1px dashed var(--line);
+        pointer-events: none;
+    }
+
+    .pp-stamp-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1.5px solid var(--stamp-red);
+        border-radius: 2px;
+        padding: 8px 14px;
+        color: var(--stamp-red-dark);
+    }
+
+    .pp-field-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        color: var(--ink-soft);
+        font-weight: 600;
+    }
+
+    .pp-input-line {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1.5px solid var(--line);
+        border-radius: 0;
+        padding: 10px 2px;
+        font-size: 18px;
+        color: var(--ink);
+    }
+
+    .pp-input-line:focus {
+        outline: none;
+        border-bottom-color: var(--stamp-red);
+        box-shadow: none;
+    }
+
+    .pp-textarea-ruled {
+        width: 100%;
+        background-color: var(--paper-card);
+        background-image: repeating-linear-gradient(
+            var(--paper-card),
+            var(--paper-card) 31px,
+            var(--line) 32px
+        );
+        line-height: 32px;
+        border: none;
+        border-radius: 0;
+        padding: 0 2px;
+        resize: vertical;
+        color: var(--ink);
+    }
+
+    .pp-textarea-ruled:focus {
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #161210;
+        --paper-card: #1E1916;
+        --ink: #EDE6D6;
+        --ink-soft: #B3A891;
+        --stamp-red: #E05A4F;
+        --stamp-red-dark: #C8453B;
+        --brass: #C9A467;
+        --line: #3A322A;
+    }
 }

@@ -1,2 +1,9 @@
 
+- [ ] write test for draft / unseal paths
 - [ ] replace laravel logos with pennypost logos
+- [x] make sure you can edit the message (draft it) rather than it scheduling send. 
+- [ ] decide whether when you schedule it- is it going to just not do anything
+- [ ] how do I find users? Should I have a separate serach page for users? Like find users on the platform. 
+- [ ] yeah i think it should have a separate page for users to find other users.
+- [ ] creaete light/dark toggler
+- [ ] allow you to recover your password by sending an email

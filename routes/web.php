@@ -24,6 +24,11 @@ require __DIR__.'/auth.php';
 
 Route::get('/inbox', [MessageController::class, 'index'])->name('messages.inbox');
 Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
+Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
 Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
+Route::get('/messages/{message}/edit', [MessageController::class, 'edit'])->name('messages.edit');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+Route::put('/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
+Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+Route::post('/messages/{message}/unseal', [MessageController::class, 'unseal'])->name('messages.unseal');
 Route::get('/users/search', UserSearchController::class)->name('users.search');

@@ -1,25 +1,30 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Write a message') }}
+        <h2 class="pp-serif font-semibold text-xl text-[var(--ink)] leading-tight">
+            {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <p class="mb-6 text-sm text-gray-600 dark:text-gray-400">
-                    {{ __('Messages are delivered once a week, Sunday at 12:00 GMT. Send before Friday 12:00 GMT to catch the next batch.') }}
-                    {{ __('Right now, that\'s') }}
-                    <span class="font-medium text-gray-800 dark:text-gray-200">{{ $nextBatch->format('l, j M Y \a\t H:i') }} GMT</span>.
-                </p>
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8 space-y-4">
+            @if (session('status') === 'draft-saved')
+                <div class="pp-stamp-badge text-sm">{{ __('Draft saved. Come back whenever.') }}</div>
+            @elseif (session('status') === 'message-unsealed')
+                <div class="pp-stamp-badge text-sm">{{ __('Unsealed — this is a draft again.') }}</div>
+            @endif
+
+            <div class="pp-letter-card p-6 sm:p-10">
+                <div class="pp-stamp-badge pp-mono text-xs mb-8">
+                    <span>{{ __('Next post') }}</span>
+                    <span class="font-bold">{{ $nextBatch->format('D, j M \a\t H:i') }} GMT</span>
+                </div>
 
                 <form
                     method="POST"
-                    action="{{ route('messages.store') }}"
+                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
                     x-data="{
-                        query: '{{ old('recipient_name', '') }}',
-                        recipientId: '{{ old('recipient_id', '') }}',
+                        query: '{{ old('recipient_name', $letter->recipient->name ?? '') }}',
+                        recipientId: '{{ old('recipient_id', $letter->recipient_id ?? '') }}',
                         results: [],
                         open: false,
                         search() {
@@ -37,55 +42,82 @@
                     }"
                 >
                     @csrf
+                    @if ($letter->exists)
+                        @method('PUT')
+                    @endif
 
                     <div class="relative">
-                        <x-input-label for="recipient_name" :value="__('To')" />
-                        <x-text-input
+                        <label for="recipient_name" class="pp-field-label">{{ __('To') }}</label>
+                        <input
                             id="recipient_name"
-                            class="block mt-1 w-full"
                             type="text"
                             autocomplete="off"
+                            class="pp-input-line pp-serif mt-1"
                             x-model="query"
                             @input="search()"
-                            placeholder="{{ __('Start typing a name...') }}"
-                        />
+                            placeholder="{{ __('Who is this for?') }}"
+                        >
                         <input type="hidden" name="recipient_id" x-model="recipientId">
 
                         <ul
                             x-show="open"
                             x-cloak
                             @click.outside="open = false"
-                            class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg divide-y divide-gray-100 dark:divide-gray-600"
+                            class="absolute z-10 mt-1 w-full bg-[var(--paper-card)] border border-[var(--line)] shadow-lg divide-y divide-[var(--line)]"
                         >
                             <template x-for="user in results" :key="user.id">
                                 <li
                                     @click="select(user)"
-                                    class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                                    class="px-4 py-2 text-sm text-[var(--ink)] hover:bg-[var(--paper)] cursor-pointer"
                                     x-text="user.name"
                                 ></li>
                             </template>
                         </ul>
 
-                        <x-input-error :messages="$errors->get('recipient_id')" class="mt-2" />
+                        @error('recipient_id')
+                            <p class="mt-2 text-sm text-[var(--stamp-red)]">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div class="mt-4">
-                        <x-input-label for="body" :value="__('Message')" />
+                    <div class="mt-8">
+                        <label for="body" class="pp-field-label">{{ __('Your letter') }}</label>
                         <textarea
                             id="body"
                             name="body"
-                            rows="8"
+                            rows="10"
                             maxlength="2000"
-                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
-                        >{{ old('body') }}</textarea>
-                        <x-input-error :messages="$errors->get('body')" class="mt-2" />
+                            class="pp-textarea-ruled pp-serif mt-3 text-[17px]"
+                        >{{ old('body', $letter->body ?? '') }}</textarea>
+                        @error('body')
+                            <p class="mt-2 text-sm text-[var(--stamp-red)]">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div class="flex items-center justify-end mt-6">
-                        <x-primary-button>{{ __('Send') }}</x-primary-button>
+                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-dashed border-[var(--line)] flex-wrap gap-4">
+                        <p class="text-xs text-[var(--ink-soft)] pp-mono max-w-xs">
+                            {{ __('Sending seals it into the next batch — you can still unseal and edit until the Friday noon GMT cutoff.') }}
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <button type="submit" name="intent" value="draft" class="pp-btn pp-btn-ghost">
+                                {{ __('Save draft') }}
+                            </button>
+                            <button type="submit" name="intent" value="send" class="pp-btn pp-btn-solid">
+                                {{ __('Seal & send') }}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
+
+            @if ($letter->exists && $letter->is_draft)
+                <form method="POST" action="{{ route('messages.destroy', $letter) }}" onsubmit="return confirm('{{ __('Delete this draft for good?') }}')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-xs text-[var(--ink-soft)] hover:text-[var(--stamp-red)] pp-mono underline">
+                        {{ __('Delete this draft') }}
+                    </button>
+                </form>
+            @endif
         </div>
     </div>
 </x-app-layout>
