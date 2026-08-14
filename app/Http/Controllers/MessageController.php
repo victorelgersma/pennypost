@@ -110,7 +110,7 @@ class MessageController extends Controller
 
     protected function save(Request $request, Message $message): RedirectResponse
     {
-        $wantsToSend = $request->input('intent') === 'send';
+        $wantsToSend = $request->input('intent', 'send') === 'send';
 
         if (! $wantsToSend) {
             $validated = $request->validate([
