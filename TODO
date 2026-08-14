@@ -8,6 +8,7 @@ Defo
 - [ ] Don't show the Next delivery time above each letter (i.e "Next Post") Show it on the dashboard page. 
 - [ ] change "Directory" to "User directory"
 - [ ] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
+- [ ] Make the github public and allow contributions
 
 Done
 
