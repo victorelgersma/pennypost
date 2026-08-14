@@ -3,6 +3,8 @@ Defo
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
 - [ ] replace "Unseal" with "Unseal and Edit"
+- [ ] Same thing with "My Correspondence" - it should not say anything about "Delivered letters shjopwing up here every Sunday GMT at noon" - instead if there's nothing it shouuld link to the User Directeory and nudge the User to write to someone. 
+- [ ] The Drafts page should allow you to delete a draft. Editing a draft should also have a button that says delete this draft. 
 - [ ] Don't show the Next delivery time above each letter (i.e "Next Post") Show it on the dashboard page. 
 - [ ] change "Directory" to "User directory"
 - [ ] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
