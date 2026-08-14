@@ -1,9 +1,21 @@
+Defo
 
-- [ ] write test for draft / unseal paths
-- [ ] replace "Inbox" with "My correspondence"|
-- [ ] decide whether when you schedule it- is it going to just not do anything
-- [ ] Create a searchable User directory. It should display when accounts were registered. 
-- [ ] remove the dark mode theme and just invest in the light mode theme, nothing else. 
-- [ ] allow you to recover your password by sending an email
+- [ ] add ENV Vars to allow e-mail send for forgot password flow
+- [ ] verify email address before registering a user? 
+- [ ] replace "Unseal" with "Unseal and Edit"
+- [ ] Don't show the Next delivery time above each letter (i.e "Next Post") Show it on the dashboard page. 
+- [ ] change "Directory" to "User directory"
+- [ ] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
+
+Done
+
+- [x] replace "Inbox" with "My correspondence"|
+- [x] Create a searchable User directory. It should display when accounts were registered. 
+- [x] remove the dark mode theme and just invest in the light mode theme, nothing else. 
+- [x] write test for draft / unseal paths
 - [x] replace laravel logos with pennypost logos
 - [x] make sure you can edit the message (draft it) rather than it scheduling send. 
+
+Maybe
+
+- [ ] add magic link login? 

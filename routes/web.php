@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserSearchController;
+use App\Http\Controllers\UserDirectoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,18 +18,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/inbox', [MessageController::class, 'index'])->name('messages.inbox');
+    Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
+    Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
+    Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
+    Route::get('/messages/{message}/edit', [MessageController::class, 'edit'])->name('messages.edit');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::put('/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    Route::post('/messages/{message}/unseal', [MessageController::class, 'unseal'])->name('messages.unseal');
+
+    Route::get('/users/search', UserSearchController::class)->name('users.search');
+    Route::get('/directory', [UserDirectoryController::class, 'index'])->name('directory.index');
 });
 
 require __DIR__.'/auth.php';
-
-
-Route::get('/inbox', [MessageController::class, 'index'])->name('messages.inbox');
-Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
-Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
-Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
-Route::get('/messages/{message}/edit', [MessageController::class, 'edit'])->name('messages.edit');
-Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
-Route::put('/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
-Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
-Route::post('/messages/{message}/unseal', [MessageController::class, 'unseal'])->name('messages.unseal');
-Route::get('/users/search', UserSearchController::class)->name('users.search');

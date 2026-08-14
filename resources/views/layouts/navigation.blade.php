@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('messages.inbox')" :active="request()->routeIs('messages.inbox')">
-                        {{ __('Inbox') }}
+                        {{ __('My correspondence') }}
                     </x-nav-link>
                     <x-nav-link :href="route('messages.create')" :active="request()->routeIs('messages.create')">
                         {{ __('Write') }}
@@ -26,6 +26,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('messages.sent')" :active="request()->routeIs('messages.sent')">
                         {{ __('Sent') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
+                        {{ __('Directory') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -94,7 +97,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('messages.inbox')" :active="request()->routeIs('messages.inbox')">
-                {{ __('Inbox') }}
+                {{ __('My correspondence') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('messages.create')" :active="request()->routeIs('messages.create')">
                 {{ __('Write') }}
@@ -104,6 +107,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('messages.sent')" :active="request()->routeIs('messages.sent')">
                 {{ __('Sent') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
+                {{ __('Directory') }}
             </x-responsive-nav-link>
         </div>
 

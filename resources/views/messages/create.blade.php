@@ -23,8 +23,8 @@
                     method="POST"
                     action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
                     x-data="{
-                        query: '{{ old('recipient_name', $letter->recipient->name ?? '') }}',
-                        recipientId: '{{ old('recipient_id', $letter->recipient_id ?? '') }}',
+                        query: '{{ old('recipient_name', $letter->recipient->name ?? request('to_name', '')) }}',
+                        recipientId: '{{ old('recipient_id', $letter->recipient_id ?? request('to_id', '')) }}',
                         results: [],
                         open: false,
                         search() {

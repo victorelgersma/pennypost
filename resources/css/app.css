@@ -13,6 +13,13 @@
         --brass: #9C7A45;
         --line: #D8D0BE;
     }
+
+    body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
 }
 
 @layer components {
@@ -45,6 +52,17 @@
         font-weight: 700;
     }
 
+    .pp-link {
+        color: var(--stamp-red);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .pp-link:hover {
+        color: var(--stamp-red-dark);
+    }
+
+    /* Buttons */
     .pp-btn {
         font-size: 14px;
         padding: 9px 18px;
@@ -54,8 +72,14 @@
         font-weight: 500;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
         cursor: pointer;
+    }
+
+    .pp-btn:disabled {
+        opacity: .5;
+        cursor: not-allowed;
     }
 
     .pp-btn-ghost {
@@ -79,6 +103,18 @@
         border-color: var(--stamp-red-dark);
     }
 
+    .pp-btn-danger {
+        background: transparent;
+        color: var(--stamp-red);
+        border-color: var(--stamp-red);
+    }
+
+    .pp-btn-danger:hover {
+        background: var(--stamp-red);
+        color: var(--paper-card);
+    }
+
+    /* Cards */
     .pp-letter-card {
         background: var(--paper-card);
         border: 1.5px solid var(--ink);
@@ -93,6 +129,11 @@
         pointer-events: none;
     }
 
+    .pp-card {
+        background: var(--paper-card);
+        border: 1px solid var(--line);
+    }
+
     .pp-stamp-badge {
         display: inline-flex;
         align-items: center;
@@ -103,12 +144,14 @@
         color: var(--stamp-red-dark);
     }
 
+    /* Form fields */
     .pp-field-label {
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: .12em;
         color: var(--ink-soft);
         font-weight: 600;
+        display: block;
     }
 
     .pp-input-line {
@@ -126,6 +169,33 @@
         outline: none;
         border-bottom-color: var(--stamp-red);
         box-shadow: none;
+    }
+
+    .pp-input {
+        width: 100%;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 2px;
+        padding: 10px 12px;
+        font-size: 15px;
+        color: var(--ink);
+    }
+
+    .pp-input:focus {
+        outline: none;
+        border-color: var(--stamp-red);
+        box-shadow: 0 0 0 1px var(--stamp-red);
+    }
+
+    .pp-checkbox {
+        accent-color: var(--stamp-red);
+        width: 16px;
+        height: 16px;
+    }
+
+    .pp-error {
+        font-size: 13px;
+        color: var(--stamp-red);
     }
 
     .pp-textarea-ruled {
@@ -147,18 +217,5 @@
     .pp-textarea-ruled:focus {
         outline: none;
         box-shadow: none;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --paper: #161210;
-        --paper-card: #1E1916;
-        --ink: #EDE6D6;
-        --ink-soft: #B3A891;
-        --stamp-red: #E05A4F;
-        --stamp-red-dark: #C8453B;
-        --brass: #C9A467;
-        --line: #3A322A;
     }
 }
