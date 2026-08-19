@@ -7,6 +7,10 @@ use App\Http\Controllers\UserSearchController;
 use App\Http\Controllers\UserDirectoryController;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('correspondence.index');
+    }
+
     return view('welcome');
 });
 

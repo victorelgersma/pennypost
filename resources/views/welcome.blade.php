@@ -154,7 +154,7 @@
                 @if (Route::has('login'))
                     <div class="pp-navlinks">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="pp-btn pp-btn-solid">Dashboard</a>
+                        <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">My correspondence</a>
                         @else
                             <a href="{{ route('login') }}" class="pp-btn pp-btn-ghost">Log in</a>
                             @if (Route::has('register'))
