@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -10,16 +11,70 @@ use Illuminate\View\View;
 
 class MessageController extends Controller
 {
+    /**
+     * One row per person the current user has an exchange of delivered
+     * letters with, newest correspondence first.
+     */
     public function index(Request $request): View
     {
-        $messages = $request->user()
-            ->receivedMessages()
-            ->delivered()
-            ->with('sender')
-            ->latest('delivered_at')
-            ->paginate(15);
+        $userId = $request->user()->id;
 
-        return view('messages.inbox', ['messages' => $messages]);
+        $messages = Message::query()
+            ->delivered()
+            ->where(function ($query) use ($userId) {
+                $query->where('sender_id', $userId)->orWhere('recipient_id', $userId);
+            })
+            ->with(['sender', 'recipient'])
+            ->orderByDesc('delivered_at')
+            ->get();
+
+        // Because $messages is already sorted newest-first, the first
+        // message groupBy() encounters for each "other person" key is
+        // necessarily that thread's most recent letter — so the groups
+        // come out in the right order for free.
+        $correspondences = $messages
+            ->groupBy(fn (Message $m) => $m->sender_id === $userId ? $m->recipient_id : $m->sender_id)
+            ->map(function ($thread) use ($userId) {
+                $latest = $thread->first();
+                $person = $latest->sender_id === $userId ? $latest->recipient : $latest->sender;
+
+                return (object) [
+                    'person' => $person,
+                    'latest' => $latest,
+                    'count' => $thread->count(),
+                ];
+            })
+            ->values();
+
+        return view('correspondence.index', ['correspondences' => $correspondences]);
+    }
+
+    /**
+     * The full delivered thread between the current user and one other
+     * person, oldest first.
+     */
+    public function show(Request $request, User $person): View
+    {
+        $userId = $request->user()->id;
+
+        abort_if($person->id === $userId, 404);
+
+        $messages = Message::query()
+            ->delivered()
+            ->where(function ($query) use ($userId, $person) {
+                $query->where(function ($q) use ($userId, $person) {
+                    $q->where('sender_id', $userId)->where('recipient_id', $person->id);
+                })->orWhere(function ($q) use ($userId, $person) {
+                    $q->where('sender_id', $person->id)->where('recipient_id', $userId);
+                });
+            })
+            ->orderBy('delivered_at')
+            ->get();
+
+        return view('correspondence.show', [
+            'person' => $person,
+            'messages' => $messages,
+        ]);
     }
 
     public function sent(Request $request): View

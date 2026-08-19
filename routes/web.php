@@ -10,16 +10,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/inbox', [MessageController::class, 'index'])->name('messages.inbox');
+    Route::get('/correspondence', [MessageController::class, 'index'])->name('correspondence.index');
+    Route::get('/correspondence/{person}', [MessageController::class, 'show'])->name('correspondence.show');
+
     Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
     Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
     Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');

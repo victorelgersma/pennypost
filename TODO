@@ -1,6 +1,5 @@
 Defo
 
-- [-] add favicon
 - [ ] remove explicit 'SENT' page
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
@@ -11,6 +10,7 @@ Defo
 
 Done
 
+- [x] add favicon
 - [x] change "Directory" to "User directory"
 - [x] replace "Unseal" with "Unseal and Edit"
 - [x] replace "Inbox" with "My correspondence"|
