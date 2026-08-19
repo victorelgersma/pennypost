@@ -1,17 +1,18 @@
 Defo
 
+- [ ] add favicon
 - [ ] remove explicit 'SENT' page
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
-- [ ] replace "Unseal" with "Unseal and Edit"
 - [ ] The Drafts page should allow you to delete a draft. Editing a draft should also have a button that says delete this draft. 
-- [ ] change "Directory" to "User directory"
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
 - [ ] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
 - [ ] add github page to about page
 
 Done
 
+- [x] change "Directory" to "User directory"
+- [x] replace "Unseal" with "Unseal and Edit"
 - [x] replace "Inbox" with "My correspondence"|
 - [x] replace "Laravel" instead of "Penny Post" 
 - [x] Make the github public
