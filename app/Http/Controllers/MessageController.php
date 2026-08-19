@@ -12,21 +12,27 @@ use Illuminate\View\View;
 class MessageController extends Controller
 {
     /**
-     * One row per person the current user has an exchange of delivered
-     * letters with, newest correspondence first.
+     * One tile per person the current user has a correspondence with:
+     * anyone they've exchanged delivered letters with, plus anyone
+     * they've sealed a letter to that's still awaiting delivery. Someone
+     * else's letter to you that hasn't been delivered yet never counts —
+     * that would spoil the whole "no peeking before post day" premise.
      */
     public function index(Request $request): View
     {
         $userId = $request->user()->id;
 
         $messages = Message::query()
-            ->delivered()
+            ->sent()
             ->where(function ($query) use ($userId) {
                 $query->where('sender_id', $userId)->orWhere('recipient_id', $userId);
             })
+            ->where(function ($query) use ($userId) {
+                $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
+            })
             ->with(['sender', 'recipient'])
-            ->orderByDesc('delivered_at')
-            ->get();
+            ->orderByDesc('sent_at')
+            ->get(['id', 'sender_id', 'recipient_id', 'sent_at']);
 
         // Because $messages is already sorted newest-first, the first
         // message groupBy() encounters for each "other person" key is
@@ -36,12 +42,9 @@ class MessageController extends Controller
             ->groupBy(fn (Message $m) => $m->sender_id === $userId ? $m->recipient_id : $m->sender_id)
             ->map(function ($thread) use ($userId) {
                 $latest = $thread->first();
-                $person = $latest->sender_id === $userId ? $latest->recipient : $latest->sender;
 
                 return (object) [
-                    'person' => $person,
-                    'latest' => $latest,
-                    'count' => $thread->count(),
+                    'person' => $latest->sender_id === $userId ? $latest->recipient : $latest->sender,
                 ];
             })
             ->values();
@@ -50,8 +53,10 @@ class MessageController extends Controller
     }
 
     /**
-     * The full delivered thread between the current user and one other
-     * person, oldest first.
+     * The thread with one person: every delivered letter between you two,
+     * plus any of your own sealed-but-undelivered letters to them. Their
+     * undelivered letters to you are excluded — those stay hidden until
+     * post day.
      */
     public function show(Request $request, User $person): View
     {
@@ -60,7 +65,7 @@ class MessageController extends Controller
         abort_if($person->id === $userId, 404);
 
         $messages = Message::query()
-            ->delivered()
+            ->sent()
             ->where(function ($query) use ($userId, $person) {
                 $query->where(function ($q) use ($userId, $person) {
                     $q->where('sender_id', $userId)->where('recipient_id', $person->id);
@@ -68,25 +73,16 @@ class MessageController extends Controller
                     $q->where('sender_id', $person->id)->where('recipient_id', $userId);
                 });
             })
-            ->orderBy('delivered_at')
+            ->where(function ($query) use ($userId) {
+                $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
+            })
+            ->orderByRaw('COALESCE(delivered_at, sent_at) asc')
             ->get();
 
         return view('correspondence.show', [
             'person' => $person,
             'messages' => $messages,
         ]);
-    }
-
-    public function sent(Request $request): View
-    {
-        $messages = $request->user()
-            ->sentMessages()
-            ->sent()
-            ->with('recipient')
-            ->latest('sent_at')
-            ->paginate(15);
-
-        return view('messages.sent', ['messages' => $messages]);
     }
 
     public function drafts(Request $request): View
@@ -209,6 +205,8 @@ class MessageController extends Controller
             'sent_at' => now(),
         ])->save();
 
-        return redirect()->route('messages.sent')->with('status', 'message-sent');
+        return redirect()
+            ->route('correspondence.show', $message->recipient)
+            ->with('status', 'message-sent');
     }
 }

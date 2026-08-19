@@ -22,7 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/correspondence', [MessageController::class, 'index'])->name('correspondence.index');
     Route::get('/correspondence/{person}', [MessageController::class, 'show'])->name('correspondence.show');
 
-    Route::get('/messages/sent', [MessageController::class, 'sent'])->name('messages.sent');
     Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
     Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
     Route::get('/messages/{message}/edit', [MessageController::class, 'edit'])->name('messages.edit');

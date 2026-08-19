@@ -21,9 +21,6 @@
                     <x-nav-link :href="route('messages.drafts')" :active="request()->routeIs('messages.drafts') || request()->routeIs('messages.edit')">
                         {{ __('Drafts') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('messages.sent')" :active="request()->routeIs('messages.sent')">
-                        {{ __('Sent') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
                         {{ __('Directory') }}
                     </x-nav-link>
@@ -98,9 +95,6 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('messages.drafts')" :active="request()->routeIs('messages.drafts') || request()->routeIs('messages.edit')">
                 {{ __('Drafts') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('messages.sent')" :active="request()->routeIs('messages.sent')">
-                {{ __('Sent') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
                 {{ __('Directory') }}
