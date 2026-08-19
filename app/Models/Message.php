@@ -47,16 +47,6 @@ class Message extends Model
         return $this->delivered_at !== null;
     }
 
-    /**
-     * The Friday 12:00 UTC cutoff before this message's Sunday batch —
-     * the same cutoff nextBatchFor() uses to decide which week a letter
-     * catches. A sealed letter can be unsealed back to a draft any time
-     * up until this point.
-     */
-    public function unsealDeadline(): ?CarbonImmutable
-    {
-        return $this->scheduled_for?->subDays(2);
-    }
 
     public function canUnseal(): bool
     {
@@ -91,30 +81,42 @@ class Message extends Model
         return $query->sent()->undelivered()->where('scheduled_for', '<=', $asOf ?? now());
     }
 
+
     /**
-     * Work out which weekly batch (Sunday 12:00 UTC) a message sent "now"
-     * will go out in. The cutoff to catch a given Sunday's batch is the
-     * preceding Friday at 12:00 UTC.
-     */
-    public static function nextBatchFor(?CarbonInterface $sentAt = null): CarbonImmutable
-    {
-        $sentAt = CarbonImmutable::instance($sentAt ?? now())->setTimezone('UTC');
-        $probe = $sentAt->startOfDay();
+ * Work out which weekly batch (Friday 12:00 UTC) a message sent "now"
+ * will go out in. The cutoff to catch a given Friday's batch is the
+ * preceding Monday at 12:00 UTC.
+ */
+public static function nextBatchFor(?CarbonInterface $sentAt = null): CarbonImmutable
+{
+    $sentAt = CarbonImmutable::instance($sentAt ?? now())->setTimezone('UTC');
+    $probe = $sentAt->startOfDay();
 
-        for ($i = 0; $i < 14; $i++) {
-            if ($probe->isSunday()) {
-                $sunday = $probe->setTime(12, 0);
-                $cutoff = $sunday->subDays(2); // Friday 12:00 UTC
+    for ($i = 0; $i < 14; $i++) {
+        if ($probe->isFriday()) {
+            $friday = $probe->setTime(12, 0);
+            $cutoff = $friday->subDays(4); // Monday 12:00 UTC
 
-                if ($sentAt->lessThanOrEqualTo($cutoff)) {
-                    return $sunday;
-                }
+            if ($sentAt->lessThanOrEqualTo($cutoff)) {
+                return $friday;
             }
-
-            $probe = $probe->addDay();
         }
 
-        // Unreachable in practice — keeps the return type honest.
-        return $sentAt->next(CarbonImmutable::SUNDAY)->setTime(12, 0);
+        $probe = $probe->addDay();
     }
+
+    // Unreachable in practice — keeps the return type honest.
+    return $sentAt->next(CarbonImmutable::FRIDAY)->setTime(12, 0);
+}
+
+/**
+ * The Monday 12:00 UTC cutoff before this message's Friday batch —
+ * the same cutoff nextBatchFor() uses to decide which week a letter
+ * catches. A sealed letter can be unsealed back to a draft any time
+ * up until this point.
+ */
+public function unsealDeadline(): ?CarbonImmutable
+{
+    return $this->scheduled_for?->subDays(4);
+}
 }

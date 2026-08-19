@@ -1,9 +1,11 @@
 Defo
 
+- [x] next post should actually say when the message will get delivered, not when it gets posted. 
+- [ ] remove explicit 'SENT' page
+- [x] fix unit tests about letters being sent on a Sunday / Friday instead of Monday / Friday
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
 - [ ] replace "Unseal" with "Unseal and Edit"
-- [ ] Same thing with "My Correspondence" - it should not say anything about "Delivered letters shjopwing up here every Sunday GMT at noon" - instead if there's nothing it shouuld link to the User Directeory and nudge the User to write to someone. 
 - [ ] The Drafts page should allow you to delete a draft. Editing a draft should also have a button that says delete this draft. 
 - [ ] Don't show the Next delivery time above each letter (i.e "Next Post") Show it on the dashboard page. 
 - [ ] change "Directory" to "User directory"
@@ -21,4 +23,5 @@ Done
 
 Maybe
 
+- [ ] refuse to allow people to change their names
 - [ ] add magic link login? 

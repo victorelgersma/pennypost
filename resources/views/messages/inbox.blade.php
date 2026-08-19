@@ -19,7 +19,7 @@
                 </div>
             @empty
                 <div class="pp-letter-card p-6 text-sm" style="color: var(--ink-soft);">
-                    {{ __('Nothing here yet. Delivered letters show up here every Sunday at noon GMT.') }}
+                    {{ __('Nothing here yet. Delivered letters show up here every Friday at noon.') }}
                 </div>
             @endforelse
 

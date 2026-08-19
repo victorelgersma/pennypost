@@ -147,7 +147,7 @@ test('sealing a draft turns it into a scheduled, non-draft letter', function () 
 
     $sealed = $draft->fresh();
     expect($sealed->is_draft)->toBeFalse();
-    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-16');
+    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-14');
     expect($sealed->sent_at)->not->toBeNull();
 });
 
@@ -200,8 +200,8 @@ test('the sent index only shows sealed letters, never drafts', function () {
 
 // --- Unsealing ---------------------------------------------------------------
 
-test('a sealed letter can be unsealed back into an editable draft before the friday cutoff', function () {
-    freezeTimeAt('2026-08-14 11:59:59'); // one second before the cutoff
+test('a sealed letter can be unsealed back into an editable draft before the monday cutoff', function () {
+    freezeTimeAt('2026-08-10 11:59:59'); // one second before the cutoff
 
     $sender = User::factory()->create();
     $recipient = User::factory()->create();
@@ -272,7 +272,8 @@ test('a user cannot unseal someone elses letter', function () {
 // --- Full end-to-end lifecycle ---------------------------------------------------
 
 test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end', function () {
-    freezeTimeAt('2026-08-10 09:00:00'); // Monday
+    // Saturday
+    freezeTimeAt('2026-08-08 09:00:00'); 
 
     $sender = User::factory()->create();
     $recipient = User::factory()->create();
@@ -287,8 +288,8 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
     expect($draft->is_draft)->toBeTrue();
     expect($draft->recipient_id)->toBeNull();
 
-    // 2. Come back mid-week and add a recipient plus more text.
-    freezeTimeAt('2026-08-12 15:00:00'); // Wednesday
+    // 2. Come back Sunday and add a recipient plus more text.
+    freezeTimeAt('2026-08-09 9:00:00'); //Sunday
 
     $this->actingAs($sender)->put("/messages/{$draft->id}", [
         'intent' => 'draft',
@@ -300,7 +301,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
     expect($draft->is_draft)->toBeTrue();
     expect($draft->recipient_id)->toBe($recipient->id);
 
-    // 3. Seal it before Friday noon, catching this week's batch.
+    // 3. Seal it before Monday, catching this week's batch.
     $this->actingAs($sender)->put("/messages/{$draft->id}", [
         'intent' => 'send',
         'recipient_id' => $recipient->id,
@@ -309,11 +310,10 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
 
     $sealed = $draft->fresh();
     expect($sealed->is_draft)->toBeFalse();
-    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-16');
+    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-14');
     expect($sealed->sent_at)->not->toBeNull();
 
-    // 4. Have second thoughts Friday morning, still before the cutoff, and unseal it.
-    freezeTimeAt('2026-08-14 10:00:00');
+    // 4. Have second thoughts and unseal it.
 
     $this->actingAs($sender)->post("/messages/{$sealed->id}/unseal")
         ->assertRedirect(route('messages.edit', $sealed))
@@ -334,7 +334,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
     $final = $unsealed->fresh();
     expect($final->is_draft)->toBeFalse();
     expect($final->body)->toBe('Dear future reader, this is really it this time.');
-    expect($final->scheduled_for->toDateString())->toBe('2026-08-16');
+    expect($final->scheduled_for->toDateString())->toBe('2026-08-14');
 
     // 6. It now shows up in Sent, and nowhere in Drafts.
     $this->actingAs($sender)->get('/messages/sent')

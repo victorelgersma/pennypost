@@ -240,7 +240,7 @@
                         <div class="pp-step">
                             <div class="pp-step-dot pp-mono">3</div>
                             <h3 class="pp-step-title">Delivered</h3>
-                            <p class="pp-step-body">Every Sunday, the week's letters go out together. One quiet moment, not a constant drip.</p>
+                            <p class="pp-step-body">Every Monday, the week's letters go out together. One quiet moment, not a constant drip.</p>
                         </div>
                     </div>
                 </section>
