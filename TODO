@@ -1,6 +1,6 @@
 Defo
 
-- [ ] add favicon
+- [-] add favicon
 - [ ] remove explicit 'SENT' page
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
