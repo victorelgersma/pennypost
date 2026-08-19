@@ -12,5 +12,5 @@ use Illuminate\Support\Facades\Schedule;
 // where is the messages:deliver command even defined though? 
 
 Schedule::command('messages:deliver')
-    ->weeklyOn(0, '12:00') // Sunday
+    ->weeklyOn(5, '12:00') // Friday
     ->timezone('UTC');

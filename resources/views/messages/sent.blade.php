@@ -23,13 +23,16 @@
                             <span class="pp-mono text-xs px-2 py-1 border border-[var(--line)] text-[var(--ink-soft)]">
                                 {{ __('Delivered') }} {{ $message->delivered_at->format('j M, H:i') }} GMT
                             </span>
+                        @elseif ($message->scheduled_for->isPast())
+                            <span class="pp-mono text-xs px-2 py-1 border border-[var(--line)] text-[var(--ink-soft)]">
+                                {{ __('Out for delivery') }}
+                            </span>
                         @else
                             <span class="pp-mono text-xs px-2 py-1 border border-[var(--stamp-red)] text-[var(--stamp-red)]">
-                                {{ __('Sent on') }} {{ $message->scheduled_for->format('j M, H:i') }} GMT
+                                {{ __('Sent on') }} {{ $message->sent_at->format('j M, H:i') }} GMT
                             </span>
                             <span class="pp-mono text-xs px-2 py-1 border border-[var(--stamp-red)] text-[var(--stamp-red)]">
-                                {{ __('Expected delivery') }}
-                                {{ $message->scheduled_for->copy()->addDays(4)->format('j M, H:i') }} GMT
+                                {{ __('Expected delivery') }} {{ $message->scheduled_for->format('j M, H:i') }} GMT
                             </span>
                         @endif
                     </div>
