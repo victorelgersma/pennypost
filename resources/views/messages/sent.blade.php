@@ -29,7 +29,10 @@
                             </span>
                         @else
                             <span class="pp-mono text-xs px-2 py-1 border border-[var(--stamp-red)] text-[var(--stamp-red)]">
-                                {{ __('Sent on') }} {{ $message->sent_at->format('j M, H:i') }} GMT
+                                {{ __('Sealed on') }} {{ $message->sent_at->format('j M, H:i') }} GMT
+                            </span>
+                            <span class="pp-mono text-xs px-2 py-1 border border-[var(--stamp-red)] text-[var(--stamp-red)]">
+                                {{ __('Next batch') }} {{ $message->unsealDeadline()->format('j M, H:i') }} GMT
                             </span>
                             <span class="pp-mono text-xs px-2 py-1 border border-[var(--stamp-red)] text-[var(--stamp-red)]">
                                 {{ __('Expected delivery') }} {{ $message->scheduled_for->format('j M, H:i') }} GMT
