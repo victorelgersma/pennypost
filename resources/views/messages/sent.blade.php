@@ -50,7 +50,7 @@
                                 {{ __('to keep editing.') }}
                             </p>
                             <button type="submit" class="pp-btn pp-btn-ghost">
-                                {{ __('Unseal') }}
+                                {{ __('Unseal & Edit') }}
                             </button>
                         </form>
                     @endif

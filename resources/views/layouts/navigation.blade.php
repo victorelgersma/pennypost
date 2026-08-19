@@ -28,7 +28,7 @@
                         {{ __('Sent') }}
                     </x-nav-link>
                     <x-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
-                        {{ __('Directory') }}
+                        {{ __('User Directory') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                 {{ __('Sent') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
-                {{ __('Directory') }}
+                {{ __('User Directory') }}
             </x-responsive-nav-link>
         </div>
 

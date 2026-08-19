@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('recipient_id')->constrained('users')->cascadeOnDelete();
             $table->text('body');
-            $table->timestamp('scheduled_for'); // the Sunday-noon-UTC batch this belongs to
+            $table->timestamp('scheduled_for'); // the Friday-noon-UTC batch this belongs to
             $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
 

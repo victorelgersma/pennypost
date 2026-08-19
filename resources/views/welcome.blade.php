@@ -188,11 +188,11 @@
                                 <textPath href="#arcTop" startOffset="50%" text-anchor="middle">PENNY POST · ONCE A WEEK</textPath>
                             </text>
                             <text font-size="11" letter-spacing="2">
-                                <textPath href="#arcBottom" startOffset="50%" text-anchor="middle">WRITTEN SLOW · SENT SUNDAY</textPath>
+                                <textPath href="#arcBottom" startOffset="50%" text-anchor="middle">WRITTEN SLOW · SENT FRIDAY</textPath>
                             </text>
                             <line class="center-line" x1="42" y1="80" x2="158" y2="80" stroke-width="1"/>
                             <line class="center-line" x1="42" y1="120" x2="158" y2="120" stroke-width="1"/>
-                            <text x="100" y="105" text-anchor="middle" font-size="22" font-weight="700">SUN</text>
+                            <text x="100" y="105" text-anchor="middle" font-size="22" font-weight="700">FRI</text>
                         </svg>
                     </div>
                 </section>
@@ -240,7 +240,7 @@
                         <div class="pp-step">
                             <div class="pp-step-dot pp-mono">3</div>
                             <h3 class="pp-step-title">Delivered</h3>
-                            <p class="pp-step-body">Every Monday, the week's letters go out together. One quiet moment, not a constant drip.</p>
+                            <p class="pp-step-body">Every Friday, the week's letters go out together. One quiet moment, not a constant drip.</p>
                         </div>
                     </div>
                 </section>

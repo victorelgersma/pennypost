@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
-            {{ __('Directory') }}
+            {{ __('User Directory') }}
         </h2>
     </x-slot>
 

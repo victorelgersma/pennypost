@@ -1,6 +1,5 @@
 Defo
 
-- [ ] replace "Laravel" instead of "Penny Post" 
 - [ ] remove explicit 'SENT' page
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
@@ -14,6 +13,7 @@ Defo
 Done
 
 - [x] replace "Inbox" with "My correspondence"|
+- [x] replace "Laravel" instead of "Penny Post" 
 - [x] Make the github public
 - [x] Create a searchable User directory. It should display when accounts were registered. 
 - [x] fix unit tests about letters being sent on a Sunday / Friday instead of Monday / Friday

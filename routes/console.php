@@ -9,7 +9,6 @@ Artisan::command('inspire', function () {
 
 use Illuminate\Support\Facades\Schedule;
 
-// where is the messages:deliver command even defined though? 
 
 Schedule::command('messages:deliver')
     ->weeklyOn(5, '12:00') // Friday
