@@ -37,6 +37,8 @@
         <main>
             {{ $slot }}
         </main>
+
+        <x-site-footer />
     </div>
 </body>
 

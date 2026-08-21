@@ -14,11 +14,18 @@ use Illuminate\Validation\ValidationException;
 
 class LoginLinkController extends Controller
 {
+    /**
+     * Single entry point for the app — no separate registration. If the
+     * email doesn't match an existing account, one is created here with
+     * no name yet; authenticate() below routes them to onboarding to set
+     * it after they click the link.
+     */
     public function store(Request $request, SendLoginLink $sendLoginLink): RedirectResponse
     {
-        $request->validate(['email' => ['required', 'email']]);
+        $request->validate(['email' => ['required', 'email', 'max:255']]);
 
-        $throttleKey = Str::lower($request->input('email')).'|'.$request->ip();
+        $email = Str::lower($request->input('email'));
+        $throttleKey = $email.'|'.$request->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             throw ValidationException::withMessages([
@@ -28,11 +35,9 @@ class LoginLinkController extends Controller
 
         RateLimiter::hit($throttleKey, 60);
 
-        // Deliberately silent on whether the email exists, same as the old
-        // forgot-password flow — avoids leaking which emails are registered.
-        if ($user = User::where('email', $request->input('email'))->first()) {
-            $sendLoginLink($user);
-        }
+        $user = User::firstOrCreate(['email' => $email]);
+
+        $sendLoginLink($user);
 
         return redirect()->route('login')->with('status', 'login-link-sent');
     }
@@ -44,8 +49,11 @@ class LoginLinkController extends Controller
         }
 
         Auth::login($user);
-
         $request->session()->regenerate();
+
+        if ($user->name === null) {
+            return redirect()->route('onboarding.name');
+        }
 
         return redirect()->intended(route('correspondence.index', absolute: false));
     }

@@ -1,18 +1,19 @@
 Defo
 
-- [ ] add "circulars" feature
-- [ ] add ENV Vars to allow e-mail send for forgot password flow
-- [ ] verify email address before registering a user? 
+- [ ] fix test suite
+- [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
-- [ ] add github page to about page
-
-Maybe
-
-- [ ] make it email (passwordless) authentication 
+- [ ] change delivery time to close of play on Monday
+- [ ] look into E2E encryption
 
 Done
 
+- [x] add footer with "Penny Post is under active development. Found an issue? Mail us at pennypost@vjbe.net or raise an issue on Github.
+- [x] add github page to about page
+- [x] add ENV Vars to allow e-mail send for forgot password flow
+- [x] verify email address before registering a user? 
 - [x] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
+- [x] make it email (passwordless) authentication 
 - [x] remove explicit 'SENT' page
 - [x] add favicon
 - [x] change "Directory" to "User directory"

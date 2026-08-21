@@ -14,6 +14,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/profile/delete/{user}', [ProfileController::class, 'confirmDestroy'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('profile.destroy.confirm');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

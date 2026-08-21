@@ -14,6 +14,7 @@ class UserSearchController extends Controller
 
         $users = User::query()
             ->where('id', '!=', $request->user()->id)
+            ->whereNotNull('name')
             ->when($query !== '', fn ($builder) => $builder->where('name', 'like', "%{$query}%"))
             ->orderBy('name')
             ->limit(10)
