@@ -1,7 +1,15 @@
 <x-guest-layout>
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    @if (session('status') === 'login-link-sent')
+        <div class="pp-stamp-badge text-sm mb-4">
+            {{ __("Check your email — we've sent you a link to log in.") }}
+        </div>
+    @endif
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-4">
+    <p class="text-sm mb-4" style="color: var(--ink-soft);">
+        {{ __("Enter your email and we'll send you a link to log in — no password needed.") }}
+    </p>
+
+    <form method="POST" action="{{ route('login.link') }}" class="space-y-4">
         @csrf
 
         <div>
@@ -10,33 +18,9 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="pp-checkbox" name="remember">
-                <span class="ms-2 text-sm" style="color: var(--ink-soft);">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-between pt-2">
-            @if (Route::has('password.request'))
-                <a class="pp-link text-sm" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @else
-                <span></span>
-            @endif
-
+        <div class="flex items-center justify-end pt-2">
             <x-primary-button>
-                {{ __('Log in') }}
+                {{ __('Email me a login link') }}
             </x-primary-button>
         </div>
     </form>

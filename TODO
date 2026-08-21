@@ -1,15 +1,19 @@
 Defo
 
-- [ ] remove explicit 'SENT' page
+- [ ] add "circulars" feature
 - [ ] add ENV Vars to allow e-mail send for forgot password flow
 - [ ] verify email address before registering a user? 
-- [ ] The Drafts page should allow you to delete a draft. Editing a draft should also have a button that says delete this draft. 
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
-- [ ] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
 - [ ] add github page to about page
+
+Maybe
+
+- [ ] make it email (passwordless) authentication 
 
 Done
 
+- [x] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
+- [x] remove explicit 'SENT' page
 - [x] add favicon
 - [x] change "Directory" to "User directory"
 - [x] replace "Unseal" with "Unseal and Edit"
@@ -23,8 +27,3 @@ Done
 - [x] replace laravel logos with pennypost logos
 - [x] make sure you can edit the message (draft it) rather than it scheduling send. 
 - [x] next post should actually say when the message will get delivered, not when it gets posted. 
-
-Maybe
-
-- [ ] refuse to allow people to change their names
-- [ ] add magic link login? 
