@@ -630,8 +630,12 @@
     }
 
     .pp-content-wrap {
-        max-width: 57.5rem;
+        max-width: 57.5rem; /* was 47.5rem */
         margin-inline: auto;
-        padding-inline: clamp(1.5rem, 6vw, 4.5rem);
+        padding-inline: clamp(
+            1.5rem,
+            6vw,
+            4rem
+        ); /* was clamp(1.5rem, 6vw, 4.5rem) */
     }
 }

@@ -1,6 +1,8 @@
 Defo
 
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
+- [ ] add italics
+- [ ] create back up of database
 - [ ] add separate login and sign up buttons
 - [ ] add grafana logging to my VPS
 - [ ] should not depend on CDN for fonts -let's host them myself. 

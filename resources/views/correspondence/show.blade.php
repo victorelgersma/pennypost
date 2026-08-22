@@ -18,7 +18,7 @@
             <div class="pp-letter-plain">
                 @forelse ($messages as $letter)
                     <div class="pp-letter-entry p-8 sm:p-12">
-                        <p class="pp-serif text-right" style="color: var(--ink); font-size: 1.0625rem; line-height: 1.7;">
+                        <p class="pp-serif text-right" style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
                             <em>
                                 {{ __('From') }}
                                 {{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}
@@ -35,7 +35,7 @@
                             </em>
                         </p>
                         <p class="mt-3 whitespace-pre-wrap pp-serif"
-                            style="color: var(--ink); font-size: 1.0625rem; line-height: 1.7;">{{ $letter->body }}</p>
+                            style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">{{ $letter->body }}</p>
                         @if (!$letter->isDelivered() && $letter->canUnseal())
                             <form method="POST" action="{{ route('messages.unseal', $letter) }}"
                                 class="mt-4 pt-4 border-t border-dashed flex items-center justify-between gap-4 flex-wrap"
