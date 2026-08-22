@@ -150,7 +150,8 @@
         <footer class="pp-footer">
             <p class="pp-footer-text">&copy; {{ date('Y') }} Penny Post.</p>
             <div class="pp-footer-links">
-                <a href="{{ route('login') }}">Log in</a>
+                <a href="{{ route('about') }}">{{ __('About') }}</a>
+                <a href="{{ route('login') }}">{{ __('Log in') }}</a>
             </div>
         </footer>
 

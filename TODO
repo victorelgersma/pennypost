@@ -1,6 +1,7 @@
 Defo
 
-- [ ] once you click "Continue with E-mail" there should be a little spinny wheel
+- [ ] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
+- [ ] add ability to download your entire correspondence
 - [ ] fix test suite
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
@@ -10,11 +11,18 @@ Defo
 - [ ] allow users to change their e-mail
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
-- [ ] change delivery time to close of play on Monday
-- [ ] look into E2E encryption
+- [ ] change delivery time to close of play on Monday (instead of 12pm)
+
 
 Done
 
+- [x] look into E2E encryption — investigated (Aug 2026). Real E2E needs per-message
+      keys encrypted to both parties' public keys, since letters must be readable by
+      two people who don't share a secret. A simpler "password is the key" scheme
+      only works for single-user vaults (like Ente), not two-party mail. Given
+      Penny Post's threat model (personal letters, mostly-trusted users) doesn't
+      clearly call for it, and it would meaningfully complicate circulars, drafts,
+      and the account-deletion flow — decided not to pursue for now. It would be good to add this to the About page though. 
 - [x] add footer with "Penny Post is under active development. Found an issue? Mail us at pennypost@vjbe.net or raise an issue on Github.
 - [x] add github page to about page
 - [x] add ENV Vars to allow e-mail send for forgot password flow
