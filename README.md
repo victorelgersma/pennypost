@@ -32,8 +32,11 @@ php artisan serve
 
 ## To deploy
 
-Penny Post is deployed to a VPS managed by hetzner. Messages are stored in a SQLite database. 
 
+Penny Post is deployed to a VPS managed by hetzner. Messages are stored in a SQLite database. Only Victor Elgersma can deploy this app, because he has the SSH keys. 
+
+
+Note to self: 
 
 Make sure to commit build files as I cannot run `npm run build` on the server
 

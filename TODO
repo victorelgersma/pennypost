@@ -1,6 +1,9 @@
 Defo
 
 - [ ] fix test suite
+- [ ] add a 'remember me' feature
+- [ ] UX overhaul
+- [ ] allow users to change their e-mail
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
 - [ ] change delivery time to close of play on Monday

@@ -48,7 +48,7 @@ class LoginLinkController extends Controller
             $user->forceFill(['email_verified_at' => now()])->save();
         }
 
-        Auth::login($user);
+        Auth::login($user, remember: true);
         $request->session()->regenerate();
 
         if ($user->name === null) {
