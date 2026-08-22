@@ -121,10 +121,22 @@
     }
 
     /* Cards */
-    .pp-letter-card {
+    .pp-letter-plain {
         background: var(--paper-card);
-        border: 1.5px solid var(--ink);
         position: relative;
+    }
+
+    .pp-letter-plain {
+        background: var(--paper-card);
+        position: relative;
+    }
+
+    .pp-letter-plain {
+        background: var(--paper-card);
+    }
+
+    .pp-letter-entry + .pp-letter-entry {
+        border-top: 1px solid var(--line);
     }
 
     .pp-letter-card::before {
@@ -554,5 +566,114 @@
         color: var(--stamp-red-dark);
         font-size: 14px;
         background: var(--paper-card);
+    }
+
+    .pp-page-column {
+        padding-inline: clamp(0px, 6vw, 96px);
+    }
+
+    .pp-letter-leaf {
+        padding-block: 4px;
+    }
+
+    .pp-letter-head {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        margin-bottom: 20px;
+    }
+
+    .pp-letter-folio {
+        font-size: 11px;
+        color: var(--brass);
+        letter-spacing: 0.08em;
+    }
+
+    .pp-letter-from {
+        font-size: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--ink);
+    }
+
+    .pp-letter-when {
+        margin-left: auto;
+        font-size: 11px;
+        letter-spacing: 0.03em;
+        color: var(--ink-soft);
+    }
+
+    .pp-letter-sealed {
+        color: var(--stamp-red);
+    }
+
+    .pp-letter-body {
+        font-size: 19px;
+        line-height: 1.75;
+        color: var(--ink);
+        white-space: pre-wrap;
+    }
+
+    .pp-letter-body::first-letter {
+        float: left;
+        font-family: "Fraunces", serif;
+        font-weight: 600;
+        font-style: italic;
+        font-size: 3.6em;
+        line-height: 0.78;
+        padding-right: 10px;
+        padding-top: 4px;
+        color: var(--stamp-red);
+    }
+
+    .pp-letter-unseal {
+        margin-top: 18px;
+        font-size: 12px;
+        color: var(--ink-soft);
+    }
+
+    .pp-letter-unseal form {
+        display: inline;
+    }
+
+    .pp-letter-unseal button {
+        background: none;
+        border: none;
+        padding: 0;
+        font-family: inherit;
+        font-size: inherit;
+        color: var(--stamp-red);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+    }
+
+    .pp-leaf-divider {
+        display: flex;
+        align-items: center;
+        margin: 44px 0;
+    }
+
+    .pp-leaf-divider::before,
+    .pp-leaf-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+    }
+
+    .pp-leaf-divider span {
+        padding: 0 16px;
+        color: var(--stamp-red);
+        font-size: 15px;
+    }
+
+    .pp-letter-empty {
+        text-align: center;
+        font-style: italic;
+        color: var(--ink-soft);
+        padding: 48px 0;
     }
 }

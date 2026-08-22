@@ -1,4 +1,5 @@
 *.log
+database/seeders/
 .DS_Store
 .env
 .env.backup

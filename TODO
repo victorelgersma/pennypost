@@ -1,7 +1,9 @@
 Defo
 
+- [ ] make drafts appear in the correspondence
 - [ ] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
 - [ ] add ability to download your entire correspondence
+- [ ] sometimes I get a 500 when I send an email from stop@fastmail.com
 - [ ] fix test suite
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
@@ -12,6 +14,13 @@ Defo
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add an about page with an email to the developer (pennypost@vjbe.net)
 - [ ] change delivery time to close of play on Monday (instead of 12pm)
+- [ ] start looking at server usage by downloading some hetzner app 
+- [ ] go black and white and lithography
+- [ ] only use red very sparingly when there is an error. 
+- [ ] I should still have two buttons - Log in and Register. 
+- [ ] point out in the About page that Google, Facebook, etc can also read your mail
+- [ ] the interface is dark, but the letters are black on white - like the internet archive. 
+- [ ] we should have no color as a rule. Just black and white (greyscale). Red should only be for severe error messages
 
 
 Done
@@ -43,3 +52,9 @@ Done
 - [x] replace laravel logos with pennypost logos
 - [x] make sure you can edit the message (draft it) rather than it scheduling send. 
 - [x] next post should actually say when the message will get delivered, not when it gets posted. 
+
+Maybe
+
+- [ ] After feedback: Bring back (optional) passwords
+- [ ] User story: hide email input when user email gets sent to gmail. 
+- [ ] Add both email and password. 

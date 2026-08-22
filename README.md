@@ -17,6 +17,12 @@ delivery: every Friday at noon, all at once. No inbox to refresh in
 between, no indication anything is coming until it's there.
 
 
+## Seed local database
+
+```sh
+php artisan db:seed --class=DemoCorrespondenceSeeder
+```
+
 ## Run tests
 
 ```sh
