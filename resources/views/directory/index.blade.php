@@ -6,34 +6,29 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-4">
+        <div class="pp-content-wrap space-y-4">
             <form method="GET" action="{{ route('directory.index') }}">
-                <x-text-input
-                    type="text"
-                    name="q"
-                    value="{{ $query }}"
-                    placeholder="{{ __('Search by name…') }}"
-                    class="w-full"
-                />
+                <x-text-input type="text" name="q" value="{{ $query }}" placeholder="{{ __('Search by name…') }}"
+                    class="w-full" />
             </form>
 
             @forelse ($people as $person)
-                <div class="pp-letter-card p-4 sm:p-6 flex items-center justify-between gap-4 flex-wrap">
+                <div class="pp-paper-card p-4 sm:p-6 flex items-center justify-between gap-4 flex-wrap">
                     <div>
                         <p class="pp-serif font-medium" style="color: var(--ink);">{{ $person->name }}</p>
                         <p class="pp-mono text-xs mt-1" style="color: var(--ink-soft);">
                             {{ __('Joined') }} {{ $person->created_at->format('M Y') }}
                         </p>
                     </div>
-                    <a
-                        href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
-                        class="pp-btn pp-btn-ghost"
+
+                    <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
+                    class="pp-btn pp-btn-ghost"
                     >
-                        {{ __('Write') }}
+                    {{ __('Write') }}
                     </a>
                 </div>
             @empty
-                <div class="pp-letter-card p-6 text-sm" style="color: var(--ink-soft);">
+                <div class="pp-paper-card p-6 text-sm" style="color: var(--ink-soft);">
                     {{ __('No one matches that search.') }}
                 </div>
             @endforelse

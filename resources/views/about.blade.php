@@ -74,11 +74,9 @@
                     <div>
                         <h3 class="pp-stamp-title">{{ __('Who runs Penny Post?') }}</h3>
                         <p class="pp-stamp-body">
-                        <p class="pp-stamp-body">
                             {{ __('Penny Post is a personal project actively developed and maintained by') }}
                             <a href="https://vjbe.net" class="pp-link" target="_blank" rel="noopener">Victor
                                 Elgersma-Azmanov</a>
-                        </p>
                         </p>
                     </div>
                 </div>

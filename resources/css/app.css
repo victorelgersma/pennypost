@@ -4,16 +4,33 @@
 
 @layer base {
     :root {
-        --paper: #f3eee2;
-        --paper-card: #fbf8f1;
-        --ink: #211d18;
-        --ink-soft: #5b564c;
-        --stamp-red: #af3029;
-        --stamp-red-dark: #7c221d;
-        --brass: #9c7a45;
-        --line: #d8d0be;
-    }
+        /* Site chrome — dark, strictly greyscale, softened contrast. */
+        --paper: #1a1a1a;
+        --paper-card: #242424;
+        --ink: #d6d6d6;
+        --ink-soft: #8f8f8f;
+        --line: #3a3a3a;
+        --brass: #808080;
 
+        /* Neutral accent (buttons, links, badges). Kept the old variable
+           name to avoid a wider rename — it's a soft grey now, not a color. */
+        --stamp-red: #d9d9d9;
+        --stamp-red-dark: #b3b3b3;
+
+        /* The two deliberate, narrow exceptions to "greyscale". */
+        --logo-red: #af3029; /* Penny Post mark only, for now */
+        --error-red: #e5484d; /* validation errors + destructive actions only */
+
+        /* A letter is unaffected by site theme — this is literally your
+           original cream/ink palette from before dark mode existed. */
+        --letter-paper: #f2ecd8;
+        --letter-paper-card: #f8f3e4;
+        --letter-ink: #211d18;
+        --letter-ink-soft: #5b564c;
+        --letter-line: #d8d0be;
+        --letter-accent: #4a4136;
+        --letter-accent-dark: #2f2a23;
+    }
     body {
         background: var(--paper);
         color: var(--ink);
@@ -42,11 +59,11 @@
         width: 30px;
         height: 30px;
         border-radius: 9999px;
-        border: 1.5px solid var(--stamp-red);
+        border: 1.5px solid var(--logo-red);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--stamp-red);
+        color: var(--logo-red);
         font-size: 13px;
     }
 
@@ -111,28 +128,44 @@
 
     .pp-btn-danger {
         background: transparent;
-        color: var(--stamp-red);
-        border-color: var(--stamp-red);
+        color: var(--error-red);
+        border-color: var(--error-red);
     }
 
     .pp-btn-danger:hover {
-        background: var(--stamp-red);
+        background: var(--error-red);
         color: var(--paper-card);
     }
 
-    /* Cards */
-    .pp-letter-plain {
-        background: var(--paper-card);
-        position: relative;
-    }
+    /* The actual letters: always paper-white, regardless of site theme.
+       Redefining the shared tokens here means every existing var(--ink),
+       var(--line), var(--stamp-red) etc. inside this subtree automatically
+       flips back to light-mode values — no blade edits needed. */
 
     .pp-letter-plain {
-        background: var(--paper-card);
-        position: relative;
+        --paper: var(--letter-paper);
+        --paper-card: var(--letter-paper-card);
+        --ink: var(--letter-ink);
+        --ink-soft: var(--letter-ink-soft);
+        --line: var(--letter-line);
+        --stamp-red: var(--letter-accent);
+        --stamp-red-dark: var(--letter-accent-dark);
+
+        background: var(--letter-paper);
+        min-height: 70vh; /* new */
     }
 
-    .pp-letter-plain {
-        background: var(--paper-card);
+    .pp-paper-card {
+        --paper: var(--letter-paper);
+        --paper-card: var(--letter-paper-card);
+        --ink: var(--letter-ink);
+        --ink-soft: var(--letter-ink-soft);
+        --line: var(--letter-line);
+        --stamp-red: var(--letter-accent);
+        --stamp-red-dark: var(--letter-accent-dark);
+
+        background: var(--letter-paper-card);
+        position: relative;
     }
 
     .pp-letter-entry + .pp-letter-entry {
@@ -140,9 +173,9 @@
     }
 
     .pp-letter-card {
-    background: var(--paper-card);
-    position: relative;
-}
+        background: var(--paper-card);
+        position: relative;
+    }
 
     .pp-letter-card::before {
         content: "";
@@ -218,29 +251,9 @@
 
     .pp-error {
         font-size: 13px;
-        color: var(--stamp-red);
+        color: var(--error-red);
     }
 
-    .pp-textarea-ruled {
-        width: 100%;
-        background-color: var(--paper-card);
-        background-image: repeating-linear-gradient(
-            var(--paper-card),
-            var(--paper-card) 31px,
-            var(--line) 32px
-        );
-        line-height: 32px;
-        border: none;
-        border-radius: 0;
-        padding: 0 2px;
-        resize: vertical;
-        color: var(--ink);
-    }
-
-    .pp-textarea-ruled:focus {
-        outline: none;
-        box-shadow: none;
-    }
     /* Landing page */
     .pp-nav {
         display: flex;
@@ -573,64 +586,10 @@
         background: var(--paper-card);
     }
 
-    .pp-page-column {
-        padding-inline: clamp(0px, 6vw, 96px);
-    }
-
-    .pp-letter-leaf {
-        padding-block: 4px;
-    }
-
-    .pp-letter-head {
-        display: flex;
-        align-items: baseline;
-        flex-wrap: wrap;
-        gap: 6px 16px;
-        margin-bottom: 20px;
-    }
-
     .pp-letter-folio {
         font-size: 11px;
         color: var(--brass);
         letter-spacing: 0.08em;
-    }
-
-    .pp-letter-from {
-        font-size: 15px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        color: var(--ink);
-    }
-
-    .pp-letter-when {
-        margin-left: auto;
-        font-size: 11px;
-        letter-spacing: 0.03em;
-        color: var(--ink-soft);
-    }
-
-    .pp-letter-sealed {
-        color: var(--stamp-red);
-    }
-
-    .pp-letter-body {
-        font-size: 19px;
-        line-height: 1.75;
-        color: var(--ink);
-        white-space: pre-wrap;
-    }
-
-    .pp-letter-body::first-letter {
-        float: left;
-        font-family: "Fraunces", serif;
-        font-weight: 600;
-        font-style: italic;
-        font-size: 3.6em;
-        line-height: 0.78;
-        padding-right: 10px;
-        padding-top: 4px;
-        color: var(--stamp-red);
     }
 
     .pp-letter-unseal {
@@ -655,30 +614,24 @@
         cursor: pointer;
     }
 
-    .pp-leaf-divider {
-        display: flex;
-        align-items: center;
-        margin: 44px 0;
+    .pp-textarea-plain {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0 2px;
+        resize: vertical;
+        color: var(--ink);
     }
 
-    .pp-leaf-divider::before,
-    .pp-leaf-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--line);
+    .pp-textarea-plain:focus {
+        outline: none;
+        box-shadow: none;
     }
 
-    .pp-leaf-divider span {
-        padding: 0 16px;
-        color: var(--stamp-red);
-        font-size: 15px;
-    }
-
-    .pp-letter-empty {
-        text-align: center;
-        font-style: italic;
-        color: var(--ink-soft);
-        padding: 48px 0;
+    .pp-content-wrap {
+        max-width: 47.5rem;
+        margin-inline: auto;
+        padding-inline: clamp(1.5rem, 6vw, 4.5rem);
     }
 }

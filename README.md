@@ -20,6 +20,7 @@ between, no indication anything is coming until it's there.
 ## Seed local database
 
 ```sh
+php artisan migrate:fresh --seed
 php artisan db:seed --class=DemoCorrespondenceSeeder
 ```
 

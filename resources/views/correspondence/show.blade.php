@@ -11,14 +11,14 @@
         </div>
     </x-slot>
     <div>
-        <div class="pp-wrap">
+        <div class="pp-content-wrap">
             @if (session('status') === 'message-sent')
                 <div class="pp-stamp-badge text-sm mb-4">{{ __('Sealed! It will arrive on the next post day.') }}</div>
             @endif
             <div class="pp-letter-plain">
                 @forelse ($messages as $letter)
-                    <div class="pp-letter-entry p-6 sm:p-8">
-                        <p class="pp-serif text-right" style="color: var(--ink); font-size: 17px; line-height: 1.7;">
+                    <div class="pp-letter-entry p-8 sm:p-12">
+                        <p class="pp-serif text-right" style="color: var(--ink); font-size: 1.0625rem; line-height: 1.7;">
                             <em>
                                 {{ __('From') }}
                                 {{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}
@@ -35,7 +35,7 @@
                             </em>
                         </p>
                         <p class="mt-3 whitespace-pre-wrap pp-serif"
-                            style="color: var(--ink); font-size: 17px; line-height: 1.7;">{{ $letter->body }}</p>
+                            style="color: var(--ink); font-size: 1.0625rem; line-height: 1.7;">{{ $letter->body }}</p>
                         @if (!$letter->isDelivered() && $letter->canUnseal())
                             <form method="POST" action="{{ route('messages.unseal', $letter) }}"
                                 class="mt-4 pt-4 border-t border-dashed flex items-center justify-between gap-4 flex-wrap"
@@ -52,7 +52,7 @@
                         @endif
                     </div>
                 @empty
-                    <div class="p-6 text-sm" style="color: var(--ink-soft);">
+                    <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
                         {{ __('Nothing here yet.') }}
                     </div>
                 @endforelse

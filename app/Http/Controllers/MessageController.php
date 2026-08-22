@@ -163,13 +163,18 @@ class MessageController extends Controller
     {
         $wantsToSend = $request->input('intent', 'send') === 'send';
 
+        $notPennyPostMember = "That doesn't look like a Penny Post member — pick someone from the suggestions.";
+
         if (! $wantsToSend) {
             $validated = $request->validate([
                 'recipient_id' => [
-                    'nullable', 'integer', 'exists:users,id',
+                    'nullable', 'integer', 
+                    Rule::exists('users', 'id')->whereNull('deleted_at'),
                     Rule::notIn([$request->user()->id]),
                 ],
                 'body' => ['nullable', 'string', 'max:2000'],
+            ], [
+                'recipient_id.exists' => $notPennyPostMember,
             ]);
 
             $message->sender_id = $request->user()->id;
@@ -188,11 +193,13 @@ class MessageController extends Controller
             'recipient_id' => [
                 'required',
                 'integer',
-                'exists:users,id',
+                Rule::exists('users', 'id')->whereNull('deleted_at'),
                 Rule::notIn([$request->user()->id]),
             ],
             'body' => ['required', 'string', 'max:2000'],
         ], [
+            'recipient_id.required' => $notPennyPostMember,
+            'recipient_id.exists' => $notPennyPostMember,
             'recipient_id.not_in' => "You can't send a message to yourself.",
         ]);
 

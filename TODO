@@ -1,30 +1,37 @@
 Defo
 
-- [ ] make drafts appear in the correspondence
+- [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
+- [ ] add separate login and sign up buttons
+- [ ] should not depend on CDN for fonts -let's host them myself. 
+- [ ] create loading state for button when I type the email
+- [ ] make write full screen
+- [ ] lines should go under /create
 - [ ] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
-- [ ] add ability to download your entire correspondence
-- [ ] sometimes I get a 500 when I send an email from stop@fastmail.com
 - [ ] fix test suite
+- [ ] make sure names are unique. 
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
 - [ ] in fact since "Victor" is deleted it should just show as "deleted user" for me
 - [ ] add a 'remember me' feature
-- [ ] UX overhaul
 - [ ] allow users to change their e-mail
-- [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
-- [ ] add an about page with an email to the developer (pennypost@vjbe.net)
 - [ ] change delivery time to close of play on Monday (instead of 12pm)
 - [ ] start looking at server usage by downloading some hetzner app 
 - [ ] go black and white and lithography
-- [ ] only use red very sparingly when there is an error. 
-- [ ] I should still have two buttons - Log in and Register. 
+- [ ] I should still have two buttons - Log in and Register -> instead of one "Get Started"  - the difference is that in the Register you have a name.
 - [ ] point out in the About page that Google, Facebook, etc can also read your mail
 - [ ] the interface is dark, but the letters are black on white - like the internet archive. 
 - [ ] we should have no color as a rule. Just black and white (greyscale). Red should only be for severe error messages
+- [ ] add ability to download your entire correspondence (text? markdown? Pdf? how?)
+- [ ] sometimes I get a 500 when I send an email from stop@fastmail.com
+- [ ] on the about page say "Hey google is also not E2E encrypted"
+- [ ] if you are looking for encrypted E2E email look at Tuta
+
 
 
 Done
 
+- [x] add an about page with an email to the developer (pennypost@vjbe.net)
+- [x] add more letters in the seed database
 - [x] look into E2E encryption — investigated (Aug 2026). Real E2E needs per-message
       keys encrypted to both parties' public keys, since letters must be readable by
       two people who don't share a secret. A simpler "password is the key" scheme
@@ -52,6 +59,12 @@ Done
 - [x] replace laravel logos with pennypost logos
 - [x] make sure you can edit the message (draft it) rather than it scheduling send. 
 - [x] next post should actually say when the message will get delivered, not when it gets posted. 
+- [x] slighly too wide now.
+- [x] /write should not say "Your Letter"
+- [x] /correspondence should just be full page by default even when no text
+- [x] relative size of letter text and background should be the same
+- [x] basically get a word zoom going. 
+- [x] add basic dark mode
 
 Maybe
 

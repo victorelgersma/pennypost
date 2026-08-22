@@ -6,9 +6,9 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="pp-content-wrap">
             @if ($correspondences->isEmpty())
-                <div class="pp-letter-card p-6 text-sm space-y-3" style="color: var(--ink-soft);">
+                <div class="pp-paper-card p-6 text-sm space-y-3" style="color: var(--ink-soft);">
                     <p>{{ __("You don't have any delivered correspondence yet.") }}</p>
                     <a href="{{ route('directory.index') }}" class="pp-btn pp-btn-ghost">
                         {{ __('Find someone to write to') }}
@@ -17,7 +17,8 @@
             @else
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     @foreach ($correspondences as $thread)
-                        <a href="{{ route('correspondence.show', $thread->person) }}" class="pp-letter-card p-6 flex items-center justify-center text-center hover:opacity-90 transition-opacity aspect-square">
+                        <a href="{{ route('correspondence.show', $thread->person) }}"
+                            class="pp-paper-card p-6 flex items-center justify-center text-center hover:opacity-90 transition-opacity aspect-square">
                             <p class="pp-serif font-medium" style="color: var(--ink);">{{ $thread->person->name }}</p>
                         </a>
                     @endforeach
