@@ -14,6 +14,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/about', 'about')->name('about');
 Route::get('/profile/delete/{user}', [ProfileController::class, 'confirmDestroy'])
     ->middleware(['signed', 'throttle:6,1'])
     ->name('profile.destroy.confirm');
@@ -26,7 +27,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/correspondence', [MessageController::class, 'index'])->name('correspondence.index');
     Route::get('/correspondence/{person}', [MessageController::class, 'show'])->name('correspondence.show');
 
-    Route::view('/about', 'about')->name('about');
 
     Route::get('/messages/drafts', [MessageController::class, 'drafts'])->name('messages.drafts');
     Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
