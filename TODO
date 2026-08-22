@@ -1,6 +1,9 @@
 Defo
 
 - [ ] fix test suite
+- [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
+- [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
+- [ ] in fact since "Victor" is deleted it should just show as "deleted user" for me
 - [ ] add a 'remember me' feature
 - [ ] UX overhaul
 - [ ] allow users to change their e-mail

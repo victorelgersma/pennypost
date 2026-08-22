@@ -12,9 +12,14 @@
     <form method="POST" action="{{ route('login.link') }}" class="space-y-4">
         @csrf
 
+        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <label for="website">Leave this field empty</label>
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+        </div>
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required
+                autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
