@@ -139,6 +139,11 @@
         border-top: 1px solid var(--line);
     }
 
+    .pp-letter-card {
+    background: var(--paper-card);
+    position: relative;
+}
+
     .pp-letter-card::before {
         content: "";
         position: absolute;
