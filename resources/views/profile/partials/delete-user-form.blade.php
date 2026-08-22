@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm" style="color: var(--ink-soft);">
-            {{ __("We'll send a confirmation link to your email before anything is deleted. Once your account is deleted, all of its letters and drafts are gone for good.") }}
+            {{ __("We'll send a confirmation link to your email before anything is deleted. Once your account is deleted, all of your drafts will be deleted, but letters you've sent will still be available to the users you've sent them to.") }}
         </p>
     </header>
 

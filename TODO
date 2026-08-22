@@ -1,5 +1,6 @@
 Defo
 
+- [ ] once you click "Continue with E-mail" there should be a little spinny wheel
 - [ ] fix test suite
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
