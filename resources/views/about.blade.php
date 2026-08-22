@@ -25,7 +25,8 @@
             </a>
             <div class="pp-navlinks">
                 @auth
-                    <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">{{ __('My correspondence') }}</a>
+                    <a href="{{ route('correspondence.index') }}"
+                        class="pp-btn pp-btn-solid">{{ __('My correspondence') }}</a>
                 @else
                     <a href="{{ route('login') }}" class="pp-btn pp-btn-solid">{{ __('Get started') }}</a>
                 @endauth
@@ -58,7 +59,8 @@
                         <h3 class="pp-stamp-title">{{ __('Is Penny Post open source?') }}</h3>
                         <p class="pp-stamp-body">
                             {{ __('Yes — the full source is public on') }}
-                            <a href="https://github.com/victorelgersma/pennypost" class="pp-link" target="_blank" rel="noopener">GitHub</a>.
+                            <a href="https://github.com/victorelgersma/pennypost" class="pp-link" target="_blank"
+                                rel="noopener">GitHub</a>.
                         </p>
                     </div>
 
@@ -72,7 +74,11 @@
                     <div>
                         <h3 class="pp-stamp-title">{{ __('Who runs Penny Post?') }}</h3>
                         <p class="pp-stamp-body">
-                            {{ __("Penny Post is a personal project actively developed and maintained by Victor Elgersma-Azmanov") }}
+                        <p class="pp-stamp-body">
+                            {{ __('Penny Post is a personal project actively developed and maintained by') }}
+                            <a href="https://vjbe.net" class="pp-link" target="_blank" rel="noopener">Victor
+                                Elgersma-Azmanov</a>
+                        </p>
                         </p>
                     </div>
                 </div>
@@ -87,7 +93,8 @@
                     {{ __('Email') }}
                     <a href="mailto:pennypost@vjbe.net" class="pp-link">pennypost@vjbe.net</a>
                     {{ __('or raise an issue on') }}
-                    <a href="https://github.com/victorelgersma/pennypost" class="pp-link" target="_blank" rel="noopener">GitHub</a>.
+                    <a href="https://github.com/victorelgersma/pennypost" class="pp-link" target="_blank"
+                        rel="noopener">GitHub</a>.
                 </p>
             </section>
         </main>
