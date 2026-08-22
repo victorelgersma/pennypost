@@ -67,7 +67,7 @@
                 <div class="mt-8">
                     <label for="body" class="sr-only">{{ __('Your letter') }}</label>
                     <textarea id="body" name="body" rows="10" maxlength="2000"
-                        class="pp-textarea-plain pp-serif mt-3 text-[1.25rem]">{{ old('body', $letter->body ?? '') }}</textarea>
+                        class="pp-textarea-plain pp-serif mt-3 text-[1.25rem] leading-[1.75]">{{ old('body', $letter->body ?? '') }}</textarea>
                     @error('body')
                         <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
                     @enderror
