@@ -630,7 +630,7 @@
     }
 
     .pp-content-wrap {
-        max-width: 47.5rem;
+        max-width: 57.5rem;
         margin-inline: auto;
         padding-inline: clamp(1.5rem, 6vw, 4.5rem);
     }
