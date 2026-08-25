@@ -24,4 +24,9 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    public function createRegister(): View
+    {
+        return view('auth.register');
+    }
 }

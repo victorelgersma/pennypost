@@ -1,6 +1,6 @@
 <x-guest-layout>
     <p class="text-sm mb-4" style="color: var(--ink-soft);">
-        {{ __("One more thing — what should we call you?") }}
+        {{ __("What should we call you? Your letters will be signed and addressed to this name.") }}
     </p>
 
     <form method="POST" action="{{ route('onboarding.name.update') }}" class="space-y-4">

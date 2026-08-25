@@ -6,7 +6,6 @@ Defo
 - [ ] in the settings add a toggle to make the letters black on white (full dark mode)
 - [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
-- [ ] add separate login and sign up buttons
 - [ ] add grafana logging to my VPS
 - [ ] should not depend on CDN for fonts -let's host them myself. 
 - [ ] create loading state for button when I type the email
@@ -22,6 +21,7 @@ Defo
 - [ ] change delivery time to close of play on Monday (instead of 12pm)
 - [ ] start looking at server usage by downloading some hetzner app 
 - [ ] I should still have two buttons - Log in and Register -> instead of one "Get Started"  - the difference is that in the Register you have a name.
+- [ ] fix 500 on emails like `victoelgerma@fastmail.com` - should instead say something like "this user wasn't recognized" 
 - [ ] point out in the About page that Google, Facebook, etc can also read your mail
 - [ ] the interface is dark, but the letters are black on white - like the internet archive. 
 - [ ] we should have no color as a rule. Just black and white (greyscale). Red should only be for severe error messages
@@ -33,6 +33,7 @@ Defo
 
 Done
 
+- [x] add separate login and sign up buttons
 - [x] go black and white and lithography
 - [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
 - [x] sometimes I get a 500 when I send an email from stop@fastmail.com

@@ -12,6 +12,12 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginLinkController::class, 'store'])
         ->name('login.link');
 
+    Route::get('register', [AuthenticatedSessionController::class, 'createRegister'])
+        ->name('register');
+
+    Route::post('register', [LoginLinkController::class, 'register'])
+        ->name('register.link');
+
     Route::get('login/{user}', [LoginLinkController::class, 'authenticate'])
         ->middleware(['signed', 'throttle:6,1'])
         ->name('login.verify');

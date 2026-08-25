@@ -28,7 +28,8 @@
                     @auth
                         <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">My correspondence</a>
                     @else
-                        <a href="{{ route('login') }}" class="pp-btn pp-btn-solid">Get started</a>
+                        <a href="{{ route('login') }}" class="pp-btn pp-btn-ghost">Log in</a>
+                        <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">Sign up</a>
                     @endauth
                 </div>
             @endif
@@ -51,7 +52,7 @@
                         refresh — everything you write is held and delivered together, once a week. Slower by design,
                         and better for it.</p>
                     <div class="pp-cta-row">
-                        <a href="{{ route('login') }}" class="pp-btn pp-btn-solid">Write your first letter</a>
+                        <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">Write your first letter</a>
                         <a href="#how-it-works" class="pp-btn pp-btn-ghost">See how it works</a>
                     </div>
                 </div>

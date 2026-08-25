@@ -14,58 +14,24 @@ use Illuminate\Validation\ValidationException;
 
 class LoginLinkController extends Controller
 {
-    /**
-     * Single entry point for the app — no separate registration. If the
-     * email doesn't match an existing account, one is created here with
-     * no name yet; authenticate() below routes them to onboarding to set
-     * it after they click the link.
-     */
     public function store(Request $request, SendLoginLink $sendLoginLink): RedirectResponse
     {
-        $request->validate(['email' => ['required', 'email', 'max:255']]);
+        $validated = $request->validate(['email' => ['required', 'email', 'max:255']]);
 
-        // Honeypot: a field real users never see or fill. Bots that auto-fill
-        // every input on a form will trip it. Pretend success rather than
-        // erroring, so we don't tip off the bot that it was caught.
-        if ($request->filled('website')) {
-            return redirect()->route('login')->with('status', 'login-link-sent');
-        }
+        return $this->sendLink($request, $sendLoginLink, $validated['email']);
+    }
 
-        $email = Str::lower($request->input('email'));
+    /**
+     * Sign-up entry point. Functionally identical to store() — a name is
+     * always collected later, in onboarding, so we don't ask for it twice.
+     * Kept as a separate action/view purely so "Log in" and "Sign up" can
+     * carry different copy for new vs. returning users.
+     */
+    public function register(Request $request, SendLoginLink $sendLoginLink): RedirectResponse
+    {
+        $validated = $request->validate(['email' => ['required', 'email', 'max:255']]);
 
-        // Per-requester throttle: stops rapid resubmission from one source.
-        $ipThrottleKey = $email.'|'.$request->ip();
-        if (RateLimiter::tooManyAttempts($ipThrottleKey, 3)) {
-            throw ValidationException::withMessages([
-                'email' => __('Please wait a moment before requesting another link.'),
-            ]);
-        }
-        RateLimiter::hit($ipThrottleKey, 60);
-
-        $user = User::where('email', $email)->first();
-        $isUnverified = $user === null || $user->email_verified_at === null;
-
-        // Per-recipient throttle for addresses that have never proven
-        // ownership by clicking a link. This is the one that actually
-        // matters: it's keyed on the EMAIL, not the requester, so rotating
-        // IPs or using different browsers doesn't help an attacker at all.
-        // Once someone clicks their first link, email_verified_at gets set
-        // and they graduate to the lighter throttle above for their own use.
-        if ($isUnverified) {
-            $emailThrottleKey = 'unverified-login-link:'.$email;
-
-            if (RateLimiter::tooManyAttempts($emailThrottleKey, 1)) {
-                return redirect()->route('login')->with('status', 'login-link-sent');
-            }
-
-            RateLimiter::hit($emailThrottleKey, 300); // 5 minutes
-        }
-
-        $user ??= User::create(['email' => $email]);
-
-        $sendLoginLink($user);
-
-        return redirect()->route('login')->with('status', 'login-link-sent');
+        return $this->sendLink($request, $sendLoginLink, $validated['email']);
     }
 
     public function authenticate(Request $request, User $user): RedirectResponse
@@ -82,5 +48,41 @@ class LoginLinkController extends Controller
         }
 
         return redirect()->intended(route('correspondence.index', absolute: false));
+    }
+
+    protected function sendLink(Request $request, SendLoginLink $sendLoginLink, string $rawEmail): RedirectResponse
+    {
+        if ($request->filled('website')) {
+            return redirect()->route('login')->with('status', 'login-link-sent');
+        }
+
+        $email = Str::lower($rawEmail);
+
+        $ipThrottleKey = $email.'|'.$request->ip();
+        if (RateLimiter::tooManyAttempts($ipThrottleKey, 3)) {
+            throw ValidationException::withMessages([
+                'email' => __('Please wait a moment before requesting another link.'),
+            ]);
+        }
+        RateLimiter::hit($ipThrottleKey, 60);
+
+        $user = User::where('email', $email)->first();
+        $isUnverified = $user === null || $user->email_verified_at === null;
+
+        if ($isUnverified) {
+            $emailThrottleKey = 'unverified-login-link:'.$email;
+
+            if (RateLimiter::tooManyAttempts($emailThrottleKey, 1)) {
+                return redirect()->route('login')->with('status', 'login-link-sent');
+            }
+
+            RateLimiter::hit($emailThrottleKey, 300);
+        }
+
+        $user ??= User::create(['email' => $email]);
+
+        $sendLoginLink($user);
+
+        return redirect()->route('login')->with('status', 'login-link-sent');
     }
 }
