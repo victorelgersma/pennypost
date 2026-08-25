@@ -30,6 +30,7 @@
         --letter-line: #d8d0be;
         --letter-accent: #4a4136;
         --letter-accent-dark: #2f2a23;
+        --ink-inverse-soft: #4a4a4a; /* ink-soft equivalent for on-ink backgrounds */
     }
     body {
         background: var(--paper);
@@ -468,8 +469,11 @@
     }
 
     .pp-rate {
-        background: var(--ink);
-        color: var(--paper);
+        background: var(
+            --paper-card
+        ); /* dark card, same family as rest of page */
+        color: var(--ink-soft); /* normal light text */
+        border: 1px solid var(--line);
         padding: 44px;
         display: flex;
         align-items: center;
@@ -488,7 +492,7 @@
     .pp-rate-body {
         font-size: 14px;
         line-height: 1.6;
-        color: #c9c4b6;
+        color: var(--ink-soft);
         margin: 0;
     }
     .pp-rate-denom {
@@ -496,7 +500,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border: 1.5px solid var(--paper);
+        border: 1.5px solid var(--paper);   /* would be near-invisible dark-on-dark-ish */
         padding: 16px 26px;
         text-align: center;
         flex-shrink: 0;
@@ -511,7 +515,7 @@
         font-size: 11px;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: #c9c4b6;
+        color: var(--ink-soft);
         margin-top: 6px;
     }
 

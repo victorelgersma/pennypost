@@ -1,7 +1,10 @@
 Defo
 
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
-- [ ] add italics
+- [ ] simplify homepage and add all info the the about page
+- [ ] periodically drafts should save regardless.
+- [ ] in the settings add a toggle to make the letters black on white (full dark mode)
+- [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
 - [ ] add separate login and sign up buttons
 - [ ] add grafana logging to my VPS
@@ -13,19 +16,16 @@ Defo
 - [ ] fix test suite
 - [ ] make sure names are unique. 
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
-- [ ] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
 - [ ] in fact since "Victor" is deleted it should just show as "deleted user" for me
 - [ ] add a 'remember me' feature
 - [ ] allow users to change their e-mail
 - [ ] change delivery time to close of play on Monday (instead of 12pm)
 - [ ] start looking at server usage by downloading some hetzner app 
-- [ ] go black and white and lithography
 - [ ] I should still have two buttons - Log in and Register -> instead of one "Get Started"  - the difference is that in the Register you have a name.
 - [ ] point out in the About page that Google, Facebook, etc can also read your mail
 - [ ] the interface is dark, but the letters are black on white - like the internet archive. 
 - [ ] we should have no color as a rule. Just black and white (greyscale). Red should only be for severe error messages
 - [ ] add ability to download your entire correspondence (text? markdown? Pdf? how?)
-- [ ] sometimes I get a 500 when I send an email from stop@fastmail.com
 - [ ] on the about page say "Hey google is also not E2E encrypted"
 - [ ] if you are looking for encrypted E2E email look at Tuta
 
@@ -33,6 +33,9 @@ Defo
 
 Done
 
+- [x] go black and white and lithography
+- [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
+- [x] sometimes I get a 500 when I send an email from stop@fastmail.com
 - [x] add an about page with an email to the developer (pennypost@vjbe.net)
 - [x] add more letters in the seed database
 - [x] look into E2E encryption — investigated (Aug 2026). Real E2E needs per-message
