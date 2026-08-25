@@ -28,7 +28,8 @@
                     <a href="{{ route('correspondence.index') }}"
                         class="pp-btn pp-btn-solid">{{ __('My correspondence') }}</a>
                 @else
-                    <a href="{{ route('login') }}" class="pp-btn pp-btn-solid">{{ __('Get started') }}</a>
+                    <a href="{{ route('login') }}" class="pp-btn pp-btn-ghost">{{ __('Log in') }}</a>
+                    <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">{{ __('Sign up') }}</a>
                 @endauth
             </div>
         </nav>
@@ -50,6 +51,48 @@
 
             <section class="pp-section">
                 <div class="pp-section-head">
+                    <p class="pp-kicker">Why it's different</p>
+                    <h2 class="pp-h2 pp-serif">Not another inbox to check</h2>
+                </div>
+                <div class="pp-stamps-grid">
+                    <div class="pp-stamp-card">
+                        <p class="pp-stamp-num pp-mono">01</p>
+                        <h3 class="pp-stamp-title">Write to one person</h3>
+                        <p class="pp-stamp-body">Letters are personal by default. Just you, them, and the page — no
+                            group threads, no reply-all.</p>
+                    </div>
+                    <div class="pp-stamp-card">
+                        <p class="pp-stamp-num pp-mono">02</p>
+                        <h3 class="pp-stamp-title">One delivery day</h3>
+                        <p class="pp-stamp-body">Everything mails together, once a week. Nothing to refresh in between.
+                        </p>
+                    </div>
+                    <div class="pp-stamp-card">
+                        <p class="pp-stamp-num pp-mono">03</p>
+                        <h3 class="pp-stamp-title">No pings, no badges</h3>
+                        <p class="pp-stamp-body">Penny Post doesn't notify you the moment something arrives. It waits
+                            for post day, like mail should.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pp-section">
+                <div class="pp-rate">
+                    <div class="pp-rate-left">
+                        <h2 class="pp-rate-title pp-serif">Slow is the whole point.</h2>
+                        <p class="pp-rate-body">A letter that arrives once a week gets read properly, and answered
+                            thoughtfully. Penny Post is built to be checked in on, not checked constantly — one less
+                            thing pulling at your attention.</p>
+                    </div>
+                    <div class="pp-rate-denom">
+                        <span class="pp-rate-price pp-serif">1&times;</span>
+                        <span class="pp-rate-unit">delivery, every week</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pp-section">
+                <div class="pp-section-head">
                     <p class="pp-kicker">Questions people ask</p>
                     <h2 class="pp-h2 pp-serif">A few things worth knowing</h2>
                 </div>
@@ -67,7 +110,8 @@
                     <div>
                         <h3 class="pp-stamp-title">{{ __('Is Penny Post end-to-end encrypted?') }}</h3>
                         <p class="pp-stamp-body">
-                            {{ __("No. We looked into this seriously — real end-to-end encryption for a two-person exchange needs each letter encrypted separately to both the sender's and recipient's own keys, plus a real key-recovery story if someone loses access to a device. That's a meaningful ongoing commitment, and for personal letters between people who know each other, it didn't seem like the right tradeoff against the complexity it would add. Letters are stored securely, but Penny Post itself can technically access message content — the same as most email and messaging services.") }}
+                            {{ __("No. We looked into this seriously — real end-to-end encryption for a two-person exchange needs each letter encrypted separately to both the sender's and recipient's own keys, plus a real key-recovery story if someone loses access to a device. That's a meaningful ongoing commitment, and for personal letters between people who know each other, it didn't seem like the right tradeoff against the complexity it would add. Letters are stored securely, but Penny Post itself can technically access message content — the same as most email and messaging services (this includes Google, Facebook, and most others). If you're looking for real E2E encrypted email, take a look at") }}
+                            <a href="https://tuta.com" class="pp-link" target="_blank" rel="noopener">Tuta</a>.
                         </p>
                     </div>
 

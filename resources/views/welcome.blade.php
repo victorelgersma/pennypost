@@ -23,17 +23,15 @@
                 <span class="pp-brand-mark">P</span>
                 <span class="pp-brand-name pp-serif">Penny Post</span>
             </a>
-            @if (Route::has('login'))
-                <div class="pp-navlinks">
-                    @auth
-                        <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">My correspondence</a>
-                    @else
-                        <a href="{{ route('login') }}" class="pp-btn pp-btn-ghost">Log in</a>
-                        <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">Sign up</a>
-                    @endauth
-                </div>
-            @endif
-
+            <div class="pp-navlinks">
+                <a href="{{ route('about') }}" class="pp-btn pp-btn-ghost">About</a>
+                @auth
+                    <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">My correspondence</a>
+                @else
+                    <a href="{{ route('login') }}" class="pp-btn pp-btn-ghost">Log in</a>
+                    <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">Sign up</a>
+                @endauth
+            </div>
         </nav>
 
         @if (session('status') === 'account-deleted')
@@ -48,12 +46,11 @@
                 <div>
                     <p class="pp-eyebrow">Letters, not messages</p>
                     <h1 class="pp-h1 pp-serif">One post<br>a week, <em>only</em>.</h1>
-                    <p class="pp-lede">Penny Post is a place to write real letters to real people. There's no inbox to
-                        refresh — everything you write is held and delivered together, once a week. Slower by design,
-                        and better for it.</p>
+                    <p class="pp-lede">Write whenever the moment strikes. Everything you send is held and delivered
+                        together, once a week — no inbox to refresh in between.</p>
                     <div class="pp-cta-row">
                         <a href="{{ route('register') }}" class="pp-btn pp-btn-solid">Write your first letter</a>
-                        <a href="#how-it-works" class="pp-btn pp-btn-ghost">See how it works</a>
+                        <a href="{{ route('about') }}" class="pp-btn pp-btn-ghost">Learn more</a>
                     </div>
                 </div>
 
@@ -78,33 +75,6 @@
                 </div>
             </section>
 
-            <section class="pp-section">
-                <div class="pp-section-head">
-                    <p class="pp-kicker">Why it's different</p>
-                    <h2 class="pp-h2 pp-serif">Not another inbox to check</h2>
-                </div>
-                <div class="pp-stamps-grid">
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">01</p>
-                        <h3 class="pp-stamp-title">Write to one person</h3>
-                        <p class="pp-stamp-body">Letters are personal by default. Just you, them, and the page — no
-                            group threads, no reply-all.</p>
-                    </div>
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">02</p>
-                        <h3 class="pp-stamp-title">One delivery day</h3>
-                        <p class="pp-stamp-body">Everything mails together, once a week. Nothing to refresh in between.
-                        </p>
-                    </div>
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">03</p>
-                        <h3 class="pp-stamp-title">No pings, no badges</h3>
-                        <p class="pp-stamp-body">Penny Post doesn't notify you the moment something arrives. It waits
-                            for post day, like mail should.</p>
-                    </div>
-                </div>
-            </section>
-
             <section class="pp-section" id="how-it-works">
                 <div class="pp-section-head">
                     <p class="pp-kicker">How it works</p>
@@ -114,47 +84,24 @@
                     <div class="pp-step">
                         <div class="pp-step-dot pp-mono">1</div>
                         <h3 class="pp-step-title">Draft</h3>
-                        <p class="pp-step-body">Write to someone whenever the moment strikes. Come back and add to it
-                            all week if you like.</p>
+                        <p class="pp-step-body">Write to someone whenever the moment strikes.</p>
                     </div>
                     <div class="pp-step">
                         <div class="pp-step-dot pp-mono">2</div>
                         <h3 class="pp-step-title">Postmarked</h3>
-                        <p class="pp-step-body">Once you seal it, it waits in the post room with everyone else's letters
-                            until post day.</p>
+                        <p class="pp-step-body">Seal it, and it waits in the post room until post day.</p>
                     </div>
                     <div class="pp-step">
                         <div class="pp-step-dot pp-mono">3</div>
                         <h3 class="pp-step-title">Delivered</h3>
-                        <p class="pp-step-body">Every Friday, the week's letters go out together. One quiet moment, not
-                            a constant drip.</p>
+                        <p class="pp-step-body">Every Friday, the week's letters go out together.</p>
                     </div>
                 </div>
-            </section>
-
-            <section class="pp-section">
-                <div class="pp-rate">
-                    <div class="pp-rate-left">
-                        <h2 class="pp-rate-title pp-serif">Slow is the whole point.</h2>
-                        <p class="pp-rate-body">A letter that arrives once a week gets read properly, and answered
-                            thoughtfully. Penny Post is built to be checked in on, not checked constantly — one less
-                            thing pulling at your attention.</p>
-                    </div>
-                    <div class="pp-rate-denom">
-                        <span class="pp-rate-price pp-serif">1&times;</span>
-                        <span class="pp-rate-unit">delivery, every week</span>
-                    </div>
+                <div class="mt-8">
+                    <a href="{{ route('about') }}" class="pp-link">{{ __('Read more about why Penny Post works this way →') }}</a>
                 </div>
             </section>
         </main>
-
-        <footer class="pp-footer">
-            <p class="pp-footer-text">&copy; {{ date('Y') }} Penny Post.</p>
-            <div class="pp-footer-links">
-                <a href="{{ route('about') }}">{{ __('About') }}</a>
-                <a href="{{ route('login') }}">{{ __('Log in') }}</a>
-            </div>
-        </footer>
 
         <x-site-footer />
     </div>
