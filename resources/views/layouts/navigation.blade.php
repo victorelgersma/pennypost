@@ -33,8 +33,7 @@
                     <x-slot name="trigger">
                         <button
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md transition ease-in-out duration-150"
-                            style="color: var(--ink-soft);"
-                        >
+                            style="color: var(--ink-soft);">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -53,6 +52,9 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('about')">
+                            {{ __('About') }}
+                        </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -70,8 +72,7 @@
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md transition duration-150 ease-in-out"
-                    style="color: var(--ink-soft);"
-                >
+                    style="color: var(--ink-soft);">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -87,7 +88,8 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden" style="border-top: 1px solid var(--line);">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('correspondence.index')" :active="request()->routeIs('correspondence.*')">
+            <x-responsive-nav-link :href="route('correspondence.index')"
+                :active="request()->routeIs('correspondence.*')">
                 {{ __('My correspondence') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('messages.create')" :active="request()->routeIs('messages.create')">
@@ -113,6 +115,9 @@
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link :href="route('about')">
+                    {{ __('About') }}
+                </x-responsive-nav-link>
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

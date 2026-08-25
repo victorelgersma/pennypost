@@ -24,7 +24,6 @@
                 <span class="pp-brand-name pp-serif">Penny Post</span>
             </a>
             <div class="pp-navlinks">
-                <a href="{{ route('about') }}" class="pp-btn pp-btn-ghost">About</a>
                 @auth
                     <a href="{{ route('correspondence.index') }}" class="pp-btn pp-btn-solid">My correspondence</a>
                 @else
