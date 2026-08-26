@@ -1,14 +1,16 @@
 Defo
 
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
-- [ ] simplify homepage and add all info the the about page
-- [ ] periodically drafts should save regardless.
+- [x] simplify homepage and add all info the the about page
+- [ ] mail should go out on tuesdays if it arrives on fridays
+- [ ] periodically drafts should save in local storage
 - [ ] in the settings add a toggle to make the letters black on white (full dark mode)
 - [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
 - [ ] add grafana logging to my VPS
 - [ ] should not depend on CDN for fonts -let's host them myself. 
 - [ ] create loading state for button when I type the email
+- [ ] custom fonts. 
 - [ ] make write full screen
 - [ ] lines should go under /create
 - [ ] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send

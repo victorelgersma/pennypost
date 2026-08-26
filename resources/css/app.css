@@ -23,7 +23,7 @@
 
         /* A letter is unaffected by site theme — this is literally your
            original cream/ink palette from before dark mode existed. */
-        --letter-paper: #f8f3e4;
+        --letter-paper: #f3e8c5;
         --letter-paper-card: var(--letter-paper);
         --letter-ink: #211d18;
         --letter-ink-soft: #5b564c;
