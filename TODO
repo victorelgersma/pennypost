@@ -1,5 +1,6 @@
 Defo
 
+- [ ] bump to Laravel 13
 - [ ] fix test suite
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] mail should go out on wednesdays if it arrives on fridays
