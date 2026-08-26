@@ -142,7 +142,7 @@ test('sealing a draft turns it into a scheduled, non-draft letter', function () 
         'body' => 'Finally ready to send this.',
     ]);
 
-    $response->assertRedirect(route('messages.sent'));
+    $response->assertRedirect(route('correspondence.show', $recipient));
     $response->assertSessionHas('status', 'message-sent');
 
     $sealed = $draft->fresh();
@@ -163,7 +163,7 @@ test('a letter can be sent directly without ever having been saved as a draft', 
         'body' => 'No detour through drafts.',
     ]);
 
-    $response->assertRedirect(route('messages.sent'));
+    $response->assertRedirect(route('correspondence.show', $recipient));
 
     $message = Message::first();
     expect($message->is_draft)->toBeFalse();
@@ -186,16 +186,18 @@ test('the drafts index only shows the current users own drafts', function () {
     expect($response->viewData('drafts')->pluck('id')->all())->toBe([$mine->id]);
 });
 
-test('the sent index only shows sealed letters, never drafts', function () {
+test('a sealed letter shows up in its correspondence thread, but a draft to the same person does not', function () {
     $user = User::factory()->create();
+    $recipient = User::factory()->create();
 
-    $sealed = Message::factory()->for($user, 'sender')->create();
-    Message::factory()->for($user, 'sender')->draft()->create();
+    Message::factory()->for($user, 'sender')->for($recipient, 'recipient')->create(['body' => 'A real sealed letter.']);
+    Message::factory()->for($user, 'sender')->for($recipient, 'recipient')->draft()->create(['body' => 'Still just a draft.']);
 
-    $response = $this->actingAs($user)->get('/messages/sent');
+    $response = $this->actingAs($user)->get(route('correspondence.show', $recipient));
 
     $response->assertOk();
-    expect($response->viewData('messages')->pluck('id')->all())->toBe([$sealed->id]);
+    $response->assertSee('A real sealed letter.');
+    $response->assertDontSee('Still just a draft.');
 });
 
 // --- Unsealing ---------------------------------------------------------------
@@ -273,7 +275,7 @@ test('a user cannot unseal someone elses letter', function () {
 
 test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end', function () {
     // Saturday
-    freezeTimeAt('2026-08-08 09:00:00'); 
+    freezeTimeAt('2026-08-08 09:00:00');
 
     $sender = User::factory()->create();
     $recipient = User::factory()->create();
@@ -289,7 +291,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
     expect($draft->recipient_id)->toBeNull();
 
     // 2. Come back Sunday and add a recipient plus more text.
-    freezeTimeAt('2026-08-09 9:00:00'); //Sunday
+    freezeTimeAt('2026-08-09 9:00:00'); // Sunday
 
     $this->actingAs($sender)->put("/messages/{$draft->id}", [
         'intent' => 'draft',
@@ -306,7 +308,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
         'intent' => 'send',
         'recipient_id' => $recipient->id,
         'body' => 'Dear future reader, here is my final update.',
-    ])->assertRedirect(route('messages.sent'));
+    ])->assertRedirect(route('correspondence.show', $recipient));
 
     $sealed = $draft->fresh();
     expect($sealed->is_draft)->toBeFalse();
@@ -329,7 +331,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
         'intent' => 'send',
         'recipient_id' => $recipient->id,
         'body' => 'Dear future reader, this is really it this time.',
-    ])->assertRedirect(route('messages.sent'));
+    ])->assertRedirect(route('correspondence.show', $recipient));
 
     $final = $unsealed->fresh();
     expect($final->is_draft)->toBeFalse();
@@ -337,7 +339,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
     expect($final->scheduled_for->toDateString())->toBe('2026-08-14');
 
     // 6. It now shows up in Sent, and nowhere in Drafts.
-    $this->actingAs($sender)->get('/messages/sent')
+    $this->actingAs($sender)->get(route('correspondence.show', $recipient))
         ->assertOk()
         ->assertSee('this is really it this time');
 

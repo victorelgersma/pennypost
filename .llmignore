@@ -1,6 +1,5 @@
 
 database/database.sqlite
-tests
 vendor
 node_modules
 storage
