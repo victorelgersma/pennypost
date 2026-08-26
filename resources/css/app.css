@@ -4,33 +4,31 @@
 
 @layer base {
     :root {
-        /* Site chrome — dark, strictly greyscale, softened contrast. */
+        /* Chrome — 5 shades */
         --paper: #1a1a1a;
         --paper-card: #242424;
-        --ink: #d6d6d6;
-        --ink-soft: #8f8f8f;
         --line: #3a3a3a;
-        --brass: #808080;
+        --ink-soft: #8f8f8f;
+        --ink: #d6d6d6;
 
-        /* Neutral accent (buttons, links, badges). Kept the old variable
-           name to avoid a wider rename — it's a soft grey now, not a color. */
-        --stamp-red: #d9d9d9;
-        --stamp-red-dark: #b3b3b3;
+        /* Accent is now just ink — in dark mode there's no useful daylight
+       between "text" and "accent" grey, so stop pretending there is. */
+        --stamp-red: var(--ink);
 
-        /* The two deliberate, narrow exceptions to "greyscale". */
-        --logo-red: #af3029; /* Penny Post mark only, for now */
-        --error-red: #e5484d; /* validation errors + destructive actions only */
+        /* The two deliberate exceptions — unchanged. */
+        --logo-red: #af3029;
+        --error-red: #e5484d;
 
-        /* A letter is unaffected by site theme — this is literally your
-           original cream/ink palette from before dark mode existed. */
-        --letter-paper: #f3e8c5;
+        /* Letter — 4 shades, theme-independent */
+        --letter-paper: #d8c5a3;
         --letter-paper-card: var(--letter-paper);
-        --letter-ink: #211d18;
+        --letter-ink: #161411;
         --letter-ink-soft: #5b564c;
         --letter-line: #d8d0be;
-        --letter-accent: #4a4136;
-        --letter-accent-dark: #2f2a23;
-        --ink-inverse-soft: #4a4a4a; /* ink-soft equivalent for on-ink backgrounds */
+
+        /* Accent reuses ink-soft rather than a fifth warm shade — a link
+       inside a letter doesn't need its own hue, just its own weight. */
+        --letter-accent: var(--letter-ink-soft);
     }
     body {
         background: var(--paper);
@@ -68,22 +66,14 @@
         font-size: 13px;
     }
 
-    .pp-kicker {
-        font-size: 12px;
-        color: var(--stamp-red);
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        font-weight: 700;
-    }
-
     .pp-link {
-        color: var(--stamp-red);
+        color: var(--ink-soft);
         text-decoration: underline;
         text-underline-offset: 3px;
     }
 
     .pp-link:hover {
-        color: var(--stamp-red-dark);
+        opacity: 0.7;
     }
 
     /* Buttons */
@@ -123,8 +113,8 @@
     }
 
     .pp-btn-solid:hover {
-        background: var(--stamp-red-dark);
-        border-color: var(--stamp-red-dark);
+        opacity: 0.85;
+        
     }
 
     .pp-btn-danger {
@@ -220,7 +210,13 @@
         padding: 10px 2px;
         font-size: 18px;
         color: var(--ink);
+        appearance: none;
+        -webkit-appearance:none;
     }
+
+    .pp-input-line--flush {
+    border: none;
+}
 
     .pp-input-line:focus {
         outline: none;
@@ -433,7 +429,7 @@
         left: 6%;
         right: 6%;
         height: 0;
-        border-top: 1px dashed var(--brass);
+        border-top: 1px dashed var(--ink-soft);
     }
     .pp-step {
         position: relative;
@@ -444,7 +440,7 @@
         height: 22px;
         border-radius: 50%;
         background: var(--paper);
-        border: 1.5px solid var(--brass);
+        border: 1.5px solid var(--ink-soft);
         position: absolute;
         top: 0;
         left: 0;
@@ -453,7 +449,7 @@
         justify-content: center;
         font-size: 11px;
         font-family: "Space Mono", monospace;
-        color: var(--brass);
+        color: var(--ink-soft);
     }
     .pp-step-title {
         font-size: 16px;

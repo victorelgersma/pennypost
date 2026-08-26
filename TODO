@@ -1,20 +1,18 @@
 Defo
 
+- [ ] fix test suite
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
-- [x] simplify homepage and add all info the the about page
-- [ ] mail should go out on tuesdays if it arrives on fridays
+- [ ] mail should go out on wednesdays if it arrives on fridays
 - [ ] periodically drafts should save in local storage
 - [ ] in the settings add a toggle to make the letters black on white (full dark mode)
 - [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
-- [ ] add grafana logging to my VPS
-- [ ] should not depend on CDN for fonts -let's host them myself. 
+- [ ] host special font for correspondence. 
 - [ ] create loading state for button when I type the email
 - [ ] custom fonts. 
 - [ ] make write full screen
+- [ ] allow users to download entire correspondence
 - [ ] lines should go under /create
-- [ ] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
-- [ ] fix test suite
 - [ ] make sure names are unique. 
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] in fact since "Victor" is deleted it should just show as "deleted user" for me
@@ -35,6 +33,8 @@ Defo
 
 Done
 
+- [x] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
+- [x] simplify homepage and add all info the the about page
 - [x] add separate login and sign up buttons
 - [x] go black and white and lithography
 - [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
