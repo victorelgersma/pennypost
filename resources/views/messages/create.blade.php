@@ -44,22 +44,24 @@
                         @method('PUT')
                     @endif
 
-                    <div class="pp-serif" style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
-                        {{ __('From') }}: {{ auth()->user()->name }}
+                    <div class="text-right">
+                        <p class="pp-mono text-xs" style="color: var(--ink-soft);">
+                            {{ now()->format('j F Y') }}
+                        </p>
                     </div>
 
-                    <div class="relative mt-1">
-                        <div class="flex items-baseline">
-                            <label for="recipient_name" class="pp-serif shrink-0"
-                                style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">{{ __('To: ') }}</label>
+                    <div class="relative mt-6 mx-auto" style="width: fit-content;">
+                        <div class="inline-flex items-baseline">
+                            <label for="recipient_name" class="pp-serif shrink-0 italic"
+                                style="color: var(--ink); font-size: 1.25rem; line-height: 1.75; margin-right: 0.75rem;">{{ __('To') }}</label>
                             <input id="recipient_name" type="text" autocomplete="off"
-                                class="pp-input-line pp-input-line--flush pp-serif flex-1" x-model="query"
-                                @input="search()">
+                                class="pp-input-line pp-input-line--flush pp-serif uppercase" style="width: 14rem;"
+                                x-model="query" @input="search()">
                         </div>
                         <input type="hidden" name="recipient_id" x-model="recipientId">
 
                         <ul x-show="open" x-cloak @click.outside="open = false"
-                            class="absolute z-10 mt-1 w-full bg-[var(--paper-card)] border border-[var(--line)] shadow-lg divide-y divide-[var(--line)]">
+                            class="absolute z-10 mt-1 w-64 bg-[var(--paper-card)] border border-[var(--line)] shadow-lg divide-y divide-[var(--line)]">
                             <template x-for="user in results" :key="user.id">
                                 <li @click="select(user)"
                                     class="px-4 py-2 text-sm text-[var(--ink)] hover:bg-[var(--paper)] cursor-pointer"
@@ -71,7 +73,6 @@
                             <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
                         @enderror
                     </div>
-
                     <div class="mt-8">
                         <label for="body" class="sr-only">{{ __('Your letter') }}</label>
                         <textarea id="body" name="body" rows="10" maxlength="2000"
@@ -79,6 +80,12 @@
                         @error('body')
                             <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                    <div class="mt-8 text-right">
+                        <p class="pp-serif" style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
+                            [{{ auth()->user()->name }}]
+                        </p>
                     </div>
 
                     <div class="flex items-center justify-between mt-8 pt-6 border-t border-dashed flex-wrap gap-4"
