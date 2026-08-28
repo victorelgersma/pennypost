@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Actions\SendLoginLink;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +80,16 @@ class LoginLinkController extends Controller
             RateLimiter::hit($emailThrottleKey, 300);
         }
 
-        $user ??= User::create(['email' => $email]);
+        if ($user === null) {
+            try {
+                $user = User::create(['email' => $email]);
+            } catch (UniqueConstraintViolationException) {
+                // Lost the race: another concurrent request (e.g. a double-clicked
+                // submit) inserted this email a moment ago. Fetch what it created
+                // instead of failing the whole request.
+                $user = User::where('email', $email)->first();
+            }
+        }
 
         $sendLoginLink($user);
 

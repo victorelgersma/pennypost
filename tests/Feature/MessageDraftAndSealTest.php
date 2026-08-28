@@ -331,7 +331,7 @@ test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end'
         'intent' => 'send',
         'recipient_id' => $recipient->id,
         'body' => 'Dear future reader, this is really it this time.',
-    ])->assertRedirect(route('correspondence.show', $recipient));
+])->assertRedirect(route('correspondence.show', $recipient));
 
     $final = $unsealed->fresh();
     expect($final->is_draft)->toBeFalse();

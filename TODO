@@ -1,11 +1,10 @@
 Defo
 
-- [ ] bump to Laravel 13
-- [ ] fix test suite
-- [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
+- [ ] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
+- [ ] add save to local storage
 - [ ] mail should go out on wednesdays if it arrives on fridays
-- [ ] periodically drafts should save in local storage
 - [ ] in the settings add a toggle to make the letters black on white (full dark mode)
+- [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
 - [ ] host special font for correspondence. 
@@ -34,6 +33,8 @@ Defo
 
 Done
 
+- [x] bump to Laravel 13
+- [x] fix test suite
 - [x] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
 - [x] simplify homepage and add all info the the about page
 - [x] add separate login and sign up buttons
