@@ -156,7 +156,7 @@
                     <div>
                         <h3 class="pp-stamp-title">{{ __('Portability') }}</h3>
                         <p class="pp-stamp-body">
-                            {{ __('You can download a copy of your correspondence in a portable format. Coming soon.') }}
+                            {{ __('You can download a copy of your correspondence in a portable format.') }}
                         </p>
                     </div>
                     <div>

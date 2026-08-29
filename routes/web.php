@@ -24,7 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    Route::get('/profile/export', [ProfileController::class, 'export'])->name('profile.export');
+    
     Route::get('/correspondence', [MessageController::class, 'index'])->name('correspondence.index');
     Route::get('/correspondence/{person}', [MessageController::class, 'show'])->name('correspondence.show');
 

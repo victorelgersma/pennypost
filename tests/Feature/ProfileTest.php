@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Message;
 use App\Notifications\AccountDeletionNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
@@ -82,4 +83,24 @@ test('an unsigned deletion link is rejected and the account is kept', function (
 
     $this->get("/profile/delete/{$user->id}")->assertForbidden();
     $this->assertNotNull($user->fresh());
+});
+
+test('a user can export their data, including drafts, sent letters, and only delivered received letters', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    Message::factory()->for($user, 'sender')->for($other, 'recipient')->create(['body' => 'A sent letter.']);
+    Message::factory()->for($user, 'sender')->draft()->create(['body' => 'A draft.']);
+    Message::factory()->for($other, 'sender')->for($user, 'recipient')->delivered()->create(['body' => 'A delivered letter to me.']);
+    Message::factory()->for($other, 'sender')->for($user, 'recipient')->create(['body' => 'Still sealed, not mine to see yet.']);
+
+    $response = $this->actingAs($user)->get('/profile/export');
+
+    $response->assertOk();
+    $content = $response->streamedContent();
+
+    expect($content)->toContain('A sent letter.')
+        ->toContain('A draft.')
+        ->toContain('A delivered letter to me.')
+        ->not->toContain('Still sealed, not mine to see yet.');
 });
