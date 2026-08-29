@@ -20,7 +20,7 @@
                     <div class="pp-letter-entry p-8 sm:p-12">
                         <div class="text-right">
                             @if ($letter->isDelivered())
-                                <p class="pp-mono text-xs" style="color: var(--ink-soft);">
+                                <p class="pp-serif" style="color: var(--ink-soft);">
                                     {{ $letter->delivered_at->format('j F Y') }}
                                 </p>
                             @else

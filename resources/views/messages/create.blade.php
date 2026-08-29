@@ -45,7 +45,7 @@
                     @endif
 
                     <div class="text-right">
-                        <p class="pp-mono text-xs" style="color: var(--ink-soft);">
+                        <p class="pp-serif" style="color: var(--ink-soft);">
                             {{ now()->format('j F Y') }}
                         </p>
                     </div>
