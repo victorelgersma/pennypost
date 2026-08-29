@@ -15,6 +15,7 @@ Route::get('/', function () {
 });
 
 Route::view('/about', 'about')->name('about');
+Route::view('/privacy', 'privacy')->name('privacy');
 Route::get('/profile/delete/{user}', [ProfileController::class, 'confirmDestroy'])
     ->middleware(['signed', 'throttle:6,1'])
     ->name('profile.destroy.confirm');

@@ -1,5 +1,9 @@
 Defo
 
+- [ ] allow users to download entire correspondence (GDPR!)
+- [ ] change font to EB Garamond of the main letter writing shiz
+- [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
+- [x] sealed letters should still have the date in the top left corner! 
 - [ ] I should have two colors, not three?
 - [ ] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
 - [ ] add save to local storage
@@ -12,7 +16,6 @@ Defo
 - [ ] create loading state for button when I type the email
 - [ ] custom fonts. 
 - [ ] make write full screen
-- [ ] allow users to download entire correspondence
 - [ ] lines should go under /create
 - [ ] make sure names are unique. 
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
