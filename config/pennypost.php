@@ -29,6 +29,6 @@ return [
     |
     */
 
-    'cutoff_days_before_batch' => env('PENNYPOST_CUTOFF_DAYS', 3),
+   'cutoff_days_before_batch' => env('PENNYPOST_CUTOFF_DAYS', 2),
 
 ];
