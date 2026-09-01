@@ -1,42 +1,78 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between gap-4 flex-wrap">
-            <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
-                {{ $person->name }}
-            </h2>
+            <div class="flex items-center gap-4">
+                <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
+                    {{ $person->name }}
+                </h2>
+                <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
+                    class="pp-btn pp-btn-solid">
+                    {{ __('Write') }}
+                    <x-icons.pen />
+                </a>
+            </div>
 
             @if ($messages->hasPages())
                 <div class="flex items-center" style="gap: 20px;">
-                    @if ($messages->hasMorePages())
-                        <a href="{{ $messages->nextPageUrl() }}"
-                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
-                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
-                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __('← Previous') }}
-                        </a>
-                    @endif
                     @if ($messages->previousPageUrl())
                         <a href="{{ $messages->previousPageUrl() }}"
                             style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
                             onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
                             onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __('Next →') }}
+                            {{ __('← Next') }}
                         </a>
+                    @else
+                        <span style="font-size: 13px; color: var(--line); cursor: default;">
+                            {{ __('← Next') }}
+                        </span>
+                    @endif
+                    @if ($messages->hasMorePages())
+                        <a href="{{ $messages->nextPageUrl() }}"
+                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
+                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
+                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
+                            {{ __('Previous →') }}
+                        </a>
+                    @else
+                        <span style="font-size: 13px; color: var(--line); cursor: default;">
+                            {{ __('Previous →') }}
+                        </span>
                     @endif
                 </div>
             @endif
         </div>
+
+        @php
+            $currentLetter = $messages->first();
+        @endphp
+
+        @if ($currentLetter && !$currentLetter->isDelivered() && $currentLetter->canUnseal())
+            <div class="flex items-center justify-between gap-4 flex-wrap mt-4 pt-4"
+                style="border-top: 1px solid var(--line);">
+                <p class="text-xs pp-mono" style="color: var(--ink-soft);">
+                    {{ __('Unseal until') }} {{ $currentLetter->unsealDeadline()->format('D, j M \a\t H:i') }} GMT
+                    {{ __('to keep editing.') }}
+                </p>
+                <form method="POST" action="{{ route('messages.unseal', $currentLetter) }}">
+                    @csrf
+                    <button type="submit" class="pp-btn pp-btn-ghost">
+                        {{ __('Unseal & Edit') }}
+                    </button>
+                </form>
+            </div>
+        @endif
     </x-slot>
     <div>
         <div class="pp-content-wrap">
             @if (session('status') === 'message-sent')
-                <div class="pp-stamp-badge text-sm mb-4">
-                    {{ __('Sealed! It will be delivered on :day the :date at noon.', [
-                        'day' => session('deliveryDayName'),
-                        'date' => session('deliveryDayOrdinal'),
-                    ]) }}
-                </div>
+                        <div class="pp-stamp-badge text-sm mb-4">
+                            {{ __('Sealed! It will be delivered on :day the :date at noon.', [
+                    'day' => session('deliveryDayName'),
+                    'date' => session('deliveryDayOrdinal'),
+                ]) }}
+                        </div>
             @endif
+
 
             <div class="pp-letter-plain">
                 @forelse ($messages as $letter)
@@ -69,35 +105,12 @@
                             style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
                             [{{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}]
                         </p>
-
-                        @if (!$letter->isDelivered() && $letter->canUnseal())
-                            <form method="POST" action="{{ route('messages.unseal', $letter) }}"
-                                class="mt-4 pt-4 border-t border-dashed flex items-center justify-between gap-4 flex-wrap"
-                                style="border-color: var(--line);">
-                                @csrf
-                                <p class="text-xs pp-mono" style="color: var(--ink-soft);">
-                                    {{ __('Unseal until') }} {{ $letter->unsealDeadline()->format('D, j M \a\t H:i') }} GMT
-                                    {{ __('to keep editing.') }}
-                                </p>
-                                <button type="submit" class="pp-btn pp-btn-ghost">
-                                    {{ __('Unseal & Edit') }}
-                                </button>
-                            </form>
-                        @endif
                     </div>
                 @empty
                     <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
                         {{ __('Nothing here yet.') }}
                     </div>
                 @endforelse
-            </div>
-
-            <div class="mt-4 text-right">
-                <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
-                    class="pp-btn pp-btn-solid">
-                    {{ __('Write') }}
-                    <x-icons.pen />
-                </a>
             </div>
         </div>
     </div>
