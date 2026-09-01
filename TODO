@@ -3,7 +3,7 @@ Defo
 - [ ] allow users to download entire correspondence (GDPR!)
 - [ ] change font to EB Garamond of the main letter writing shiz
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
-- [x] sealed letters should still have the date in the top left corner! 
+- [x] sealed letters should still have the date in the top right corner! 
 - [ ] changing email flow should send a confirmation email. 
 - [ ] change to a mail provider that doesn't keep copies in the US?
 - [ ] I should have two colors, not three?

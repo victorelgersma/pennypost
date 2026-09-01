@@ -34,13 +34,13 @@ test('a user cannot send a message to themselves', function () {
     $response->assertSessionHasErrors('recipient_id');
 });
 
-test('a message body is required and capped at 2000 characters', function () {
+test('a message body is required and capped at 20000 characters', function () {
     $sender = User::factory()->create();
     $recipient = User::factory()->create();
 
     $response = $this->actingAs($sender)->post('/messages', [
         'recipient_id' => $recipient->id,
-        'body' => str_repeat('a', 2001),
+        'body' => str_repeat('a', 20001),
     ]);
 
     $response->assertSessionHasErrors('body');

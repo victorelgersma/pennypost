@@ -21,11 +21,17 @@
                         </p>
                     </div>
 
-                    <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
-                    class="pp-btn pp-btn-ghost"
-                    >
-                    {{ __('Write') }}
-                    </a>
+                    <div class="flex items-center gap-3">
+                        @if ($correspondentIds->has($person->id))
+                            <a href="{{ route('correspondence.show', $person) }}" class="pp-btn pp-btn-ghost">
+                                {{ __('Go to correspondence') }}
+                            </a>
+                        @endif
+                        <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
+                            class="pp-btn pp-btn-solid">
+                            {{ __('Write')                            }} <x-icons.pen />
+                        </a>
+                    </div>
                 </div>
             @empty
                 <div class="pp-paper-card p-6 text-sm" style="color: var(--ink-soft);">

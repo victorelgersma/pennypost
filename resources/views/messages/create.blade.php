@@ -1,20 +1,40 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
-            {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
-        </h2>
+        <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+            <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
+                {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
+            </h2>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost">
+                    {{ __('Save draft') }}
+                </button>
+                <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid"
+                    style="padding: 11px 28px; font-size: 15px;">
+                    {{ __('Seal & send') }}
+                </button>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="pp-content-wrap">
             @if (session('status') === 'draft-saved')
-                <div class="pp-stamp-badge text-sm mb-4">{{ __('Draft saved. Come back whenever.') }}</div>
+                        @php
+                            $cutoffAt = $nextBatch->copy()->subDays(config('pennypost.cutoff_days_before_batch'));
+                        @endphp
+                        <div class="pp-stamp-badge text-sm mb-4">
+                            {{ __('Draft saved. Seal & send before :cutoff if you want your mail to arrive :delivery.', [
+                    'cutoff' => \App\Models\Message::humanDayLabel($cutoffAt) . ' at ' . $cutoffAt->format('H:i'),
+                    'delivery' => \App\Models\Message::humanDayLabel($nextBatch),
+                ]) }}
+                        </div>
             @elseif (session('status') === 'message-unsealed')
                 <div class="pp-stamp-badge text-sm mb-4">{{ __('Unsealed — this is a draft again.') }}</div>
             @endif
 
             <div class="pp-letter-plain p-8 sm:p-12">
-                <form method="POST"
+                <form id="letter-form" method="POST"
                     action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}" x-data="{
             query: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
             recipientId: @js(old('recipient_id', $letter->recipient_id ?? request('to_id', ''))),
@@ -75,7 +95,8 @@
                     </div>
                     <div class="mt-8">
                         <label for="body" class="sr-only">{{ __('Your letter') }}</label>
-                        <textarea id="body" name="body" rows="10" maxlength="2000"
+                        <textarea id="body" name="body" rows="10"
+                            maxlength="{{ config('pennypost.max_letter_length') }}"
                             class="pp-textarea-plain pp-serif mt-3 text-[1.25rem] leading-[1.75]">{{ old('body', $letter->body ?? '') }}</textarea>
                         @error('body')
                             <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
@@ -86,24 +107,6 @@
                         <p class="pp-serif" style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
                             [{{ auth()->user()->name }}]
                         </p>
-                    </div>
-
-                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-dashed flex-wrap gap-4"
-                        style="border-color: var(--line);">
-                        <p class="text-xs text-[var(--ink-soft)] pp-mono max-w-xs">
-                            {{ __('Sending seals it into the next batch, which will be posted on :post_date and delivered on :delivery_date.', [
-    'post_date' => $nextBatch->copy()->subDays(4)->format('D, j M') . ' at noon',
-    'delivery_date' => $nextBatch->format('D, j M') . ' at noon',
-]) }}
-                        </p>
-                        <div class="flex items-center gap-3">
-                            <button type="submit" name="intent" value="draft" class="pp-btn pp-btn-ghost">
-                                {{ __('Save draft') }}
-                            </button>
-                            <button type="submit" name="intent" value="send" class="pp-btn pp-btn-solid">
-                                {{ __('Seal & send') }}
-                            </button>
-                        </div>
                     </div>
                 </form>
             </div>

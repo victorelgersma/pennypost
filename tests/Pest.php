@@ -15,12 +15,11 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
-   ->use(RefreshDatabase::class)
+    ->use(RefreshDatabase::class)
     ->beforeEach(function () {
         $this->withoutVite();
     })
-    ->in('Feature');
-
+    ->in('Feature', 'Unit');
 /*
 |--------------------------------------------------------------------------
 | Expectations

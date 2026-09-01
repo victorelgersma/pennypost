@@ -36,65 +36,59 @@
 
         <main>
             <section class="pp-section" style="border-top: none; padding-top: 24px;">
-                <p class="pp-eyebrow">About</p>
-                <h1 class="pp-h1 pp-serif" style="font-size: 40px;">The idea behind Penny Post</h1>
+                <p class="pp-eyebrow">{{ __('About Penny Post') }}</p>
                 <p class="pp-lede">
-                    {{ __("Penny Post aims to fix online communication by removing its most pernicious aspect — instantaneity.") }}
+                    {{ __("Penny Post is a digital letter-writing platform. It exists to revive something we've quietly lost: the pleasure of writing a proper letter, and the particular anticipation of waiting for one to arrive.") }}
                 </p>
-                <p class="pp-lede">
-                    {{ __("Modern messaging optimizes for speed: read receipts, typing indicators, notifications the second something lands. That speed comes at a cost — we write faster than we think, and we feel pressure to reply before we've had a chance to. Letters never worked that way. You wrote when you had something to say, sent it, and got on with your life until it arrived.") }}
-                </p>
-                <p class="pp-lede">
-                    {{ __("Penny Post brings that rhythm online. Write to someone whenever the moment strikes. Once you seal a letter, it waits with everyone else's until the next delivery — every Friday at noon, all at once. No inbox to refresh in between.") }}
+                <p class="pp-lede" style="margin-top: 28px; margin-bottom: 0;">
+                    @php
+                        $cutoffDayName = \Carbon\CarbonImmutable::parse('next friday')
+                            ->subDays(config('pennypost.cutoff_days_before_batch'))
+                            ->format('l');
+                    @endphp
+                    {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, seal your letter before :day noon.', ['day' => $cutoffDayName]) }}
+                    {{ __('Messages are delivered at noon GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not.') }}
                 </p>
             </section>
 
-            <section class="pp-section">
+            <section class="pp-section" id="how-it-works">
                 <div class="pp-section-head">
-                    <p class="pp-kicker">Why it's different</p>
-                    <h2 class="pp-h2 pp-serif">Not another inbox to check</h2>
+                    <p class="pp-kicker">{{ __('How it works') }}</p>
+                    <h2 class="pp-h2 pp-serif">{{ __('From draft to doorstep in three stops') }}</h2>
                 </div>
-                <div class="pp-stamps-grid">
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">01</p>
-                        <h3 class="pp-stamp-title">Write to one person</h3>
-                        <p class="pp-stamp-body">Letters are personal by default. Just you, them, and the page — no
-                            group threads, no reply-all.</p>
+                <div class="pp-steps">
+                    <div class="pp-step">
+                        <div class="pp-step-dot pp-mono">1</div>
+                        <h3 class="pp-step-title">{{ __('Draft') }}</h3>
+                        <p class="pp-step-body">{{ __('Write to someone whenever the moment strikes.') }}</p>
                     </div>
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">02</p>
-                        <h3 class="pp-stamp-title">One delivery day</h3>
-                        <p class="pp-stamp-body">Everything mails together, once a week. Nothing to refresh in between.
+                    <div class="pp-step">
+                        <div class="pp-step-dot pp-mono">2</div>
+                        <h3 class="pp-step-title">{{ __('Postmarked') }}</h3>
+                        <p class="pp-step-body">{{ __('Seal it, and it waits in the post room until post day.') }}
                         </p>
                     </div>
-                    <div class="pp-stamp-card">
-                        <p class="pp-stamp-num pp-mono">03</p>
-                        <h3 class="pp-stamp-title">No pings, no badges</h3>
-                        <p class="pp-stamp-body">Penny Post doesn't notify you the moment something arrives. It waits
-                            for post day, like mail should.</p>
+                    <div class="pp-step">
+                        <div class="pp-step-dot pp-mono">3</div>
+                        <h3 class="pp-step-title">{{ __('Delivered') }}</h3>
+                        <p class="pp-step-body">
+                            @php
+                                $cutoffDayName = \Carbon\CarbonImmutable::parse('next friday')
+                                    ->subDays(config('pennypost.cutoff_days_before_batch'))
+                                    ->format('l');
+                            @endphp
+                            {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, seal your letter before :day noon.', ['day' => $cutoffDayName]) }}
+                        </p>
                     </div>
                 </div>
+
             </section>
 
-            <section class="pp-section">
-                <div class="pp-rate">
-                    <div class="pp-rate-left">
-                        <h2 class="pp-rate-title pp-serif">Slow is the whole point.</h2>
-                        <p class="pp-rate-body">A letter that arrives once a week gets read properly, and answered
-                            thoughtfully. Penny Post is built to be checked in on, not checked constantly — one less
-                            thing pulling at your attention.</p>
-                    </div>
-                    <div class="pp-rate-denom">
-                        <span class="pp-rate-price pp-serif">1&times;</span>
-                        <span class="pp-rate-unit">delivery, every week</span>
-                    </div>
-                </div>
-            </section>
 
             <section class="pp-section">
                 <div class="pp-section-head">
-                    <p class="pp-kicker">Questions people ask</p>
-                    <h2 class="pp-h2 pp-serif">A few things worth knowing</h2>
+                    <p class="pp-kicker">{{ __('Questions people ask') }}</p>
+                    <h2 class="pp-h2 pp-serif">{{ __('A few things worth knowing') }}</h2>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 28px; max-width: 60ch;">
@@ -110,26 +104,32 @@
                     <div>
                         <h3 class="pp-stamp-title">{{ __('Is Penny Post end-to-end encrypted?') }}</h3>
                         <p class="pp-stamp-body">
-                            {{ __("No. We looked into this seriously — real end-to-end encryption for a two-person exchange needs each letter encrypted separately to both the sender's and recipient's own keys, plus a real key-recovery story if someone loses access to a device. That's a meaningful ongoing commitment, and for personal letters between people who know each other, it didn't seem like the right tradeoff against the complexity it would add. Letters are stored securely, but Penny Post itself can technically access message content — the same as most email and messaging services (this includes Google, Facebook, and most others). If you're looking for real E2E encrypted email, take a look at") }}
+                            {{ __("Not yet. We looked into it seriously — real end-to-end encryption for a two-person exchange needs each letter encrypted separately to both the sender's and recipient's own keys, plus a proper key-recovery story if someone loses a device. Doing that well, on top of the Signal protocol, is honestly above my (Victor Elgersma-Azmanov's) pay grade right now. If you know someone who'd want to help implement it for a correspondence app, I'd love an introduction — reach out at") }}
+                            <a href="mailto:pennypost@vjbe.net" class="pp-link">pennypost@vjbe.net</a>.
+                            {{ __("In the meantime, letters are stored securely, but Penny Post can technically access message content — the same as most email and messaging services, including Google and Facebook. If you need real E2E encrypted email today, take a look at") }}
                             <a href="https://tuta.com" class="pp-link" target="_blank" rel="noopener">Tuta</a>.
                         </p>
                     </div>
 
                     <div>
-                        <h3 class="pp-stamp-title">{{ __('Who runs Penny Post?') }}</h3>
+                        <h3 class="pp-stamp-title">{{ __('Who created Penny Post?') }}</h3>
                         <p class="pp-stamp-body">
-                            {{ __('Penny Post is a personal project actively developed and maintained by') }}
+                            {{ __('Penny Post was founded by two friends who were frustrated with the aesthetics of modern messaging platforms. It is actively maintained by') }}
                             <a href="https://vjbe.net" class="pp-link" target="_blank" rel="noopener">Victor
-                                Elgersma-Azmanov</a>
+                                Elgersma-Azmanov</a> {{ __('His co-founder prefers to stay anonymous.') }}
                         </p>
+                    </div>
+                    <div>
+                        <h3 class="pp-stamp-title">{{ __('What time do I get my mail?') }}</h3>
+                        {{ __('Messages are delivered on Fridays at noon GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not. We have put a GMT clock in the Settings page.') }}
                     </div>
                 </div>
             </section>
 
             <section class="pp-section">
                 <div class="pp-section-head">
-                    <p class="pp-kicker">Get in touch</p>
-                    <h2 class="pp-h2 pp-serif">Questions, bugs, or feedback</h2>
+                    <p class="pp-kicker">{{ __('Get in touch') }}</p>
+                    <h2 class="pp-h2 pp-serif">{{ __('Questions, bugs, or feedback') }}</h2>
                 </div>
                 <p class="pp-lede" style="margin-bottom: 0;">
                     {{ __('Email') }}

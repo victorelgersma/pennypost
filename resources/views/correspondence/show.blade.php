@@ -4,28 +4,52 @@
             <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
                 {{ $person->name }}
             </h2>
-            <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
-                class="pp-btn pp-btn-solid">
-                {{ __('Write') }}
-            </a>
+
+            @if ($messages->hasPages())
+                <div class="flex items-center" style="gap: 20px;">
+                    @if ($messages->hasMorePages())
+                        <a href="{{ $messages->nextPageUrl() }}"
+                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
+                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
+                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
+                            {{ __('← Previous') }}
+                        </a>
+                    @endif
+                    @if ($messages->previousPageUrl())
+                        <a href="{{ $messages->previousPageUrl() }}"
+                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
+                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
+                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
+                            {{ __('Next →') }}
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
     </x-slot>
     <div>
         <div class="pp-content-wrap">
             @if (session('status') === 'message-sent')
-                <div class="pp-stamp-badge text-sm mb-4">{{ __('Sealed! It will arrive on the next post day.') }}</div>
+                <div class="pp-stamp-badge text-sm mb-4">
+                    {{ __('Sealed! It will be delivered on :day the :date at noon.', [
+                        'day' => session('deliveryDayName'),
+                        'date' => session('deliveryDayOrdinal'),
+                    ]) }}
+                </div>
             @endif
+
             <div class="pp-letter-plain">
                 @forelse ($messages as $letter)
                     <div class="pp-letter-entry p-8 sm:p-12">
+
                         <div class="text-right">
                             @if ($letter->isDelivered())
                                 <p class="pp-serif" style="color: var(--ink-soft);">
                                     {{ $letter->delivered_at->format('j F Y') }}
                                 </p>
                             @else
-                                <p class="pp-mono text-xs" style="color: var(--stamp-red);">
-                                    {{ __('Sealed · arrives') }} {{ $letter->scheduled_for->format('j F Y') }}
+                                <p class="pp-serif" style="color: var(--ink-soft);">
+                                    {{ $letter->sent_at->format('j F Y') }}
                                 </p>
                             @endif
                         </div>
@@ -66,6 +90,14 @@
                         {{ __('Nothing here yet.') }}
                     </div>
                 @endforelse
+            </div>
+
+            <div class="mt-4 text-right">
+                <a href="{{ route('messages.create', ['to_id' => $person->id, 'to_name' => $person->name]) }}"
+                    class="pp-btn pp-btn-solid">
+                    {{ __('Write') }}
+                    <x-icons.pen />
+                </a>
             </div>
         </div>
     </div>

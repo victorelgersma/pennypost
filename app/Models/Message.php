@@ -47,7 +47,6 @@ class Message extends Model
         return $this->delivered_at !== null;
     }
 
-
     public function canUnseal(): bool
     {
         return ! $this->is_draft
@@ -81,42 +80,46 @@ class Message extends Model
         return $query->sent()->undelivered()->where('scheduled_for', '<=', $asOf ?? now());
     }
 
-
     /**
- * Work out which weekly batch (Friday 12:00 UTC) a message sent "now"
- * will go out in. The cutoff to catch a given Friday's batch is the
- * preceding Monday at 12:00 UTC.
- */
-public static function nextBatchFor(?CarbonInterface $sentAt = null): CarbonImmutable
-{
-    $sentAt = CarbonImmutable::instance($sentAt ?? now())->setTimezone('UTC');
-    $probe = $sentAt->startOfDay();
+     * Work out which weekly batch (Friday 12:00 UTC) a message sent "now"
+     * will go out in. The cutoff to catch a given Friday's batch is the
+     * preceding Monday at 12:00 UTC.
+     */
+    public static function nextBatchFor(?CarbonInterface $sentAt = null): CarbonImmutable
+    {
+        $sentAt = CarbonImmutable::instance($sentAt ?? now())->setTimezone('UTC');
+        $probe = $sentAt->startOfDay();
 
-    for ($i = 0; $i < 14; $i++) {
-        if ($probe->isFriday()) {
-            $friday = $probe->setTime(12, 0);
-            $cutoff = $friday->subDays(4); // Monday 12:00 UTC
+        for ($i = 0; $i < 14; $i++) {
+            if ($probe->isFriday()) {
+                $friday = $probe->setTime(12, 0);
+                $cutoff = $friday->subDays(config('pennypost.cutoff_days_before_batch'));
 
-            if ($sentAt->lessThanOrEqualTo($cutoff)) {
-                return $friday;
+                if ($sentAt->lessThanOrEqualTo($cutoff)) {
+                    return $friday;
+                }
             }
+
+            $probe = $probe->addDay();
         }
 
-        $probe = $probe->addDay();
+        return $sentAt->next(CarbonImmutable::FRIDAY)->setTime(12, 0);
     }
 
-    // Unreachable in practice — keeps the return type honest.
-    return $sentAt->next(CarbonImmutable::FRIDAY)->setTime(12, 0);
-}
+    public function unsealDeadline(): ?CarbonImmutable
+    {
+        return $this->scheduled_for?->subDays(config('pennypost.cutoff_days_before_batch'));
+    }
 
-/**
- * The Monday 12:00 UTC cutoff before this message's Friday batch —
- * the same cutoff nextBatchFor() uses to decide which week a letter
- * catches. A sealed letter can be unsealed back to a draft any time
- * up until this point.
- */
-public function unsealDeadline(): ?CarbonImmutable
-{
-    return $this->scheduled_for?->subDays(4);
-}
+    public static function humanDayLabel(CarbonInterface $date): string
+    {
+        $date = CarbonImmutable::instance($date)->startOfDay();
+        $today = CarbonImmutable::now('UTC')->startOfDay();
+
+        return match (true) {
+            $date->equalTo($today) => __('today'),
+            $date->equalTo($today->addDay()) => __('tomorrow'),
+            default => $date->format('D, j M'),
+        };
+    }
 }

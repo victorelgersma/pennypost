@@ -6,20 +6,13 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('correspondence.index') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current" style="color: var(--stamp-red);" />
+                        <x-application-logo class="block h-9 w-auto fill-current" style="color: var(--accent);" />
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('correspondence.index')" :active="request()->routeIs('correspondence.*')">
                         {{ __('My correspondence') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('messages.create')" :active="request()->routeIs('messages.create')">
-                        {{ __('Write') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('messages.drafts')" :active="request()->routeIs('messages.drafts') || request()->routeIs('messages.edit')">
-                        {{ __('Drafts') }}
                     </x-nav-link>
                     <x-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
                         {{ __('Directory') }}
@@ -49,12 +42,9 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Settings') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('about')">
-                            {{ __('About') }}
-                        </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -92,12 +82,6 @@
                 :active="request()->routeIs('correspondence.*')">
                 {{ __('My correspondence') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('messages.create')" :active="request()->routeIs('messages.create')">
-                {{ __('Write') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('messages.drafts')" :active="request()->routeIs('messages.drafts') || request()->routeIs('messages.edit')">
-                {{ __('Drafts') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('directory.index')" :active="request()->routeIs('directory.index')">
                 {{ __('Directory') }}
             </x-responsive-nav-link>
@@ -112,12 +96,9 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Settings') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('about')">
-                    {{ __('About') }}
-                </x-responsive-nav-link>
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

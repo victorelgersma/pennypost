@@ -1,25 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
-            {{ __('My correspondence') }}
-        </h2>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
+                {{ __('My correspondence') }}
+            </h2>
+            <a href="{{ route('messages.create') }}" class="pp-btn pp-btn-solid">
+                {{ __('Write') }}
+                <x-icons.pen />
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="pp-content-wrap">
-            @if ($correspondences->isEmpty())
+            @if ($correspondences->isEmpty() && $draftCount === 0)
                 <div class="pp-paper-card p-6 text-sm space-y-3" style="color: var(--ink-soft);">
                     <p>{{ __("You don't have any delivered correspondence yet.") }}</p>
-                    <a href="{{ route('directory.index') }}" class="pp-btn pp-btn-ghost">
-                        {{ __('Find someone to write to') }}
-                    </a>
                 </div>
             @else
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="space-y-3">
+                    @if ($draftCount > 0)
+                        <a href="{{ route('messages.drafts') }}"
+                            class="pp-paper-card p-4 sm:p-6 flex items-center justify-between gap-4 hover:opacity-90 transition-opacity">
+                            <p class="pp-serif font-medium italic" style="color: var(--ink);">
+                                {{ __('Drafts') }}
+                            </p>
+                            <span class="pp-mono text-xs" style="color: var(--ink-soft);">
+                                {{ trans_choice(':count draft|:count drafts', $draftCount, ['count' => $draftCount]) }}
+                            </span>
+                        </a>
+                    @endif
+
                     @foreach ($correspondences as $thread)
                         <a href="{{ route('correspondence.show', $thread->person) }}"
-                            class="pp-paper-card p-6 flex items-center justify-center text-center hover:opacity-90 transition-opacity aspect-square">
-                            <p class="pp-serif font-medium" style="color: var(--ink);">{{ $thread->person->name }}</p>
+                            class="pp-paper-card p-4 sm:p-6 flex items-center justify-between gap-4 hover:opacity-90 transition-opacity">
+                            <p class="pp-serif font-medium" style="color: var(--ink);">
+                                {{ $thread->person->name }}
+                            </p>
+                            <span class="pp-mono text-xs" style="color: var(--ink-soft);">
+                                {{ trans_choice(':count letter|:count letters', $thread->letterCount, ['count' => $thread->letterCount]) }}
+                            </span>
                         </a>
                     @endforeach
                 </div>

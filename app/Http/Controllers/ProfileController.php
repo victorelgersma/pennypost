@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Actions\SendAccountDeletionLink;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,13 +12,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
+        $nextBatch = Message::nextBatchFor();
+        $nextPickup = $nextBatch->subDays(config('pennypost.cutoff_days_before_batch'));
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'nextBatch' => $nextBatch,
+            'nextPickup' => $nextPickup,
         ]);
     }
 
@@ -83,8 +89,7 @@ class ProfileController extends Controller
         return redirect()->to('/')->with('status', 'account-deleted');
     }
 
-
-// ... inside the class, alongside edit()/update()/destroy() ...
+    // ... inside the class, alongside edit()/update()/destroy() ...
 
     /**
      * Everything this user is entitled to take with them: their account

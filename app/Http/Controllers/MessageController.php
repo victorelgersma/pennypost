@@ -45,11 +45,20 @@ class MessageController extends Controller
 
                 return (object) [
                     'person' => $latest->sender_id === $userId ? $latest->recipient : $latest->sender,
+                    'letterCount' => $thread->count(),
                 ];
             })
             ->values();
 
-        return view('correspondence.index', ['correspondences' => $correspondences]);
+        $drafts = $request->user()
+            ->sentMessages()
+            ->drafts()
+            ->count();
+
+        return view('correspondence.index', [
+            'correspondences' => $correspondences,
+            'draftCount' => $drafts,
+        ]);
     }
 
     /**
@@ -58,13 +67,13 @@ class MessageController extends Controller
      * undelivered letters to you are excluded — those stay hidden until
      * post day.
      */
-    public function show(Request $request, User $person): View
+        public function show(Request $request, User $person): View
     {
         $userId = $request->user()->id;
 
         abort_if($person->id === $userId, 404);
 
-        $messages = Message::query()
+        $baseQuery = fn () => Message::query()
             ->sent()
             ->where(function ($query) use ($userId, $person) {
                 $query->where(function ($q) use ($userId, $person) {
@@ -76,12 +85,25 @@ class MessageController extends Controller
             ->where(function ($query) use ($userId) {
                 $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
             })
-            ->orderByRaw('COALESCE(delivered_at, sent_at) asc')
-            ->get();
+            ->orderByRaw('COALESCE(delivered_at, sent_at) desc');
+
+        $messages = $baseQuery()->paginate(1)->withQueryString();
+
+        // One page = one letter, so "older"/"newer" is just the letter sitting
+        // immediately before/after this one in the same ordered list — cheap
+        // to look up directly rather than re-deriving from $messages.
+        $offset = ($messages->currentPage() - 1) * $messages->perPage();
+
+        $olderLetter = $baseQuery()->skip($offset + 1)->take(1)->first(['delivered_at', 'sent_at']);
+        $newerLetter = $offset > 0
+            ? $baseQuery()->skip($offset - 1)->take(1)->first(['delivered_at', 'sent_at'])
+            : null;
 
         return view('correspondence.show', [
             'person' => $person,
             'messages' => $messages,
+            'olderLetterDate' => $olderLetter?->delivered_at ?? $olderLetter?->sent_at,
+            'newerLetterDate' => $newerLetter?->delivered_at ?? $newerLetter?->sent_at,
         ]);
     }
 
@@ -168,13 +190,14 @@ class MessageController extends Controller
         if (! $wantsToSend) {
             $validated = $request->validate([
                 'recipient_id' => [
-                    'nullable', 'integer', 
+                    'nullable', 'integer',
                     Rule::exists('users', 'id')->whereNull('deleted_at'),
                     Rule::notIn([$request->user()->id]),
                 ],
-                'body' => ['nullable', 'string', 'max:2000'],
+                'body' => ['nullable', 'string', 'max:'.config('pennypost.max_letter_length')],
             ], [
                 'recipient_id.exists' => $notPennyPostMember,
+                'body.max' => __('You have run out of ink.'),
             ]);
 
             $message->sender_id = $request->user()->id;
@@ -196,11 +219,12 @@ class MessageController extends Controller
                 Rule::exists('users', 'id')->whereNull('deleted_at'),
                 Rule::notIn([$request->user()->id]),
             ],
-            'body' => ['required', 'string', 'max:2000'],
+            'body' => ['required', 'string', 'max:'.config('pennypost.max_letter_length')],
         ], [
             'recipient_id.required' => $notPennyPostMember,
             'recipient_id.exists' => $notPennyPostMember,
-            'recipient_id.not_in' => "You can't send a message to yourself.",
+            'recipient_id.not_in' => "You can't send a message to yourself.", // TODO: rethink this - you can send messages to yourself in WhatsApp, why not here?
+            'body.max' => __('You have run out of ink.'),
         ]);
 
         $message->sender_id = $request->user()->id;
@@ -214,6 +238,8 @@ class MessageController extends Controller
 
         return redirect()
             ->route('correspondence.show', $message->recipient)
-            ->with('status', 'message-sent');
+            ->with('status', 'message-sent')
+            ->with('deliveryDayName', $message->scheduled_for->format('l'))
+            ->with('deliveryDayOrdinal', $message->scheduled_for->format('jS'));
     }
 }

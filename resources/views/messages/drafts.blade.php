@@ -13,31 +13,38 @@
 
             @forelse ($drafts as $draft)
                 <div class="pp-paper-card p-4 sm:p-6">
-                    <a href="{{ route('messages.edit', $draft) }}" class="block hover:opacity-90 transition-opacity">
-                        <div class="flex items-baseline justify-between gap-4 flex-wrap">
-                            <p class="pp-serif font-medium" style="color: var(--ink);">
-                                {{ $draft->recipient->name ?? __('No recipient yet') }}
-                            </p>
-                            <span class="pp-mono text-xs" style="color: var(--ink-soft);">
-                                {{ __('Last touched') }} {{ $draft->updated_at->diffForHumans() }}
-                            </span>
-                        </div>
-                        <p class="mt-2 text-sm line-clamp-2" style="color: var(--ink-soft);">
-                            {{ $draft->body !== '' ? $draft->body : __('(empty letter)') }}
+                    <div class="flex items-baseline justify-between gap-4 flex-wrap">
+                        <p class="pp-serif font-medium" style="color: var(--ink);">
+                            {{ $draft->recipient->name ?? __('No recipient yet') }}
                         </p>
-                    </a>
+                        <span class="pp-mono text-xs" style="color: var(--ink-soft);">
+                            {{ __('Last touched') }} {{ $draft->updated_at->diffForHumans() }}
+                        </span>
+                    </div>
+                    <p class="mt-2 text-sm line-clamp-2" style="color: var(--ink-soft);">
+                        {{ $draft->body !== '' ? $draft->body : __('(empty letter)') }}
+                    </p>
 
-                    <form method="POST" action="{{ route('messages.destroy', $draft) }}"
-                        onsubmit="return confirm('{{ __('Delete this draft for good?') }}')"
-                        class="mt-3 pt-3 border-t border-dashed" style="border-color: var(--line);">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="text-xs pp-mono underline" style="color: var(--ink-soft);"
-                            onmouseover="this.style.color='var(--error-red)'" onmouseout="this.style.color='var(--ink-soft)'">
-                            {{ __('Delete this draft') }}
-                        </button>
-                    </form>
+                    <div class="mt-3 pt-3 flex items-center gap-4" style="border-top: 1px dashed var(--line);">
+                        <a href="{{ route('messages.edit', $draft) }}"
+                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
+                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
+                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
+                            {{ __('Edit') }}
+                        </a>
+
+                        <form method="POST" action="{{ route('messages.destroy', $draft) }}"
+                            onsubmit="return confirm('{{ __('Delete this draft for good?') }}')" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                style="font-size: 13px; color: var(--ink-soft); text-decoration: none; background: none; border: none; padding: 0; font-family: inherit; cursor: pointer;"
+                                onmouseover="this.style.textDecoration='underline'; this.style.color='var(--error-red)'"
+                                onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
+                                {{ __('Delete') }}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             @empty
                 <div class="pp-paper-card p-6 text-sm" style="color: var(--ink-soft);">
