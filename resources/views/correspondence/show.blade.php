@@ -66,7 +66,7 @@
         <div class="pp-content-wrap">
             @if (session('status') === 'message-sent')
                         <div class="pp-stamp-badge text-sm mb-4">
-                            {{ __('Sealed! It will be delivered on :day the :date at noon.', [
+                            {{ __('Sealed! Your letter will arrive on :day the :date at noon.', [
                     'day' => session('deliveryDayName'),
                     'date' => session('deliveryDayOrdinal'),
                 ]) }}
