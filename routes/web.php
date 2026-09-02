@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/users/search', UserSearchController::class)->name('users.search');
     Route::get('/directory', [UserDirectoryController::class, 'index'])->name('directory.index');
+
+    Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 });
 
 require __DIR__.'/auth.php';

@@ -5,6 +5,7 @@
         </p>
         <div class="pp-footer-links">
             <a href="{{ route('about') }}">{{ __('About') }}</a>
+            <a href="{{ route('feedback.create') }}">{{ __('Feedback') }}</a>
             <a href="{{ route('privacy') }}">{{ __('Privacy Policy') }}</a>
             <a href="mailto:pennypost@vjbe.net">{{ __('Contact') }}</a>
         </div>
