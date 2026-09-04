@@ -51,6 +51,6 @@ Make sure to commit build files as I cannot run `npm run build` on the server
 ssh hetzner
 cd /var/www/laravel.vjbe.net
 git pull
+composer install --no-dev --optimize-autoloader
 php artisan migrate --force
-composer dump-autoload --optimize
 ```
