@@ -70,12 +70,6 @@ class MessageController extends Controller
      * post day.
      */
 
-/**
- * The thread with one person: every delivered letter between you two,
- * plus any of your own sealed-but-undelivered letters to them. Their
- * undelivered letters to you are excluded — those stay hidden until
- * post day.
- */
 public function show(Request $request, User $person): View
 {
     $userId = $request->user()->id;
@@ -110,6 +104,7 @@ public function show(Request $request, User $person): View
         ->pluck('page_date');
 
     $page = max(1, (int) $request->query('page', 1));
+    $page = min($page, max(1, $dates->count()));
     $currentDate = $dates->get($page - 1);
 
     $letters = $currentDate
