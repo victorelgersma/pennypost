@@ -1,13 +1,11 @@
 Defo
 
-- [ ] allow users to download entire correspondence (GDPR!)
-- [ ] change font to EB Garamond of the main letter writing shiz
+- [ ] allow users to download entire correspondence in PDF format
+- [ ] change font to EB Garamond of the main letter writing
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
 - [x] sealed letters should still have the date in the top right corner! 
 - [ ] changing email flow should send a confirmation email. 
 - [ ] change to a mail provider that doesn't keep copies in the US?
-- [ ] I should have two colors, not three?
-- [ ] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
 - [ ] add save to local storage
 - [ ] mail should go out on wednesdays if it arrives on fridays
 - [ ] in the settings add a toggle to make the letters black on white (full dark mode)
@@ -82,9 +80,12 @@ Done
 - [x] relative size of letter text and background should be the same
 - [x] basically get a word zoom going. 
 - [x] add basic dark mode
+- [x] I should have two colors, not three?
+- [x] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
 
 Maybe
 
 - [ ] After feedback: Bring back (optional) passwords
 - [ ] User story: hide email input when user email gets sent to gmail. 
 - [ ] Add both email and password. 
+
