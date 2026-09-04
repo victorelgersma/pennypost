@@ -13,7 +13,7 @@ arrived.
 Penny Post brings that rhythm online. Write to someone whenever the
 moment strikes — draft it, come back to it, take your time. Once
 you seal a letter, it waits with everyone else's until the next
-delivery: every Friday at noon, all at once. No inbox to refresh in
+delivery: every Friday at noon GMT, all at once. No inbox to refresh in
 between, no indication anything is coming until it's there.
 
 

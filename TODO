@@ -1,13 +1,10 @@
 Defo
 
-- [ ] have a draft option and a send option, no unsend
 - [ ] add notification when someone has a penny post / read or unread messages
-- [x] bugfix settings page
 - [ ] create simple deploy script that runs ON the server (instead of retyping those commands)
 - [ ] allow users to download entire correspondence in PDF format
 - [ ] change font to EB Garamond of the main letter writing
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
-- [x] sealed letters should still have the date in the top right corner! 
 - [ ] changing email flow should send a confirmation email. 
 - [ ] change to a mail provider that doesn't keep copies in the US?
 - [ ] add save to local storage
@@ -36,8 +33,13 @@ Defo
 - [ ] add ability to download your entire correspondence (text? markdown? Pdf? how?)
 - [ ] on the about page say "Hey google is also not E2E encrypted"
 - [ ] if you are looking for encrypted E2E email look at Tuta
+- [x] sealed letters should still have the date in the top right corner! 
 
+Maybe
 
+- [ ] After feedback: Bring back (optional) passwords
+- [ ] User story: hide email input when user email gets sent to gmail. 
+- [ ] Add both email and password. 
 
 Done
 
@@ -45,6 +47,7 @@ Done
 - [x] fix test suite
 - [x] once you click "Continue with E-mail" there should be a little spinny wheel because it takes a while for this email to send
 - [x] simplify homepage and add all info the the about page
+- [x] bugfix settings page
 - [x] add separate login and sign up buttons
 - [x] go black and white and lithography
 - [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
@@ -87,9 +90,5 @@ Done
 - [x] I should have two colors, not three?
 - [x] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
 
-Maybe
-
-- [ ] After feedback: Bring back (optional) passwords
-- [ ] User story: hide email input when user email gets sent to gmail. 
-- [ ] Add both email and password. 
+- [x] have a draft option and a send option, no unsend
 

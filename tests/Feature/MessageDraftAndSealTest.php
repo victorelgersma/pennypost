@@ -4,7 +4,7 @@ use App\Models\Message;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-
+use Illuminate\Support\Facades\Route;
 /**
  * Message::nextBatchFor() defaults to Laravel's now() (mutable Carbon),
  * while Message::canUnseal() calls CarbonImmutable::now() directly.
@@ -129,28 +129,6 @@ test('sealing a draft requires a recipient and a body', function () {
     expect($draft->fresh()->is_draft)->toBeTrue();
 });
 
-test('sealing a draft turns it into a scheduled, non-draft letter', function () {
-    freezeTimeAt('2026-08-10 09:00:00'); // Monday
-
-    $sender = User::factory()->create();
-    $recipient = User::factory()->create();
-    $draft = Message::factory()->for($sender, 'sender')->draft()->create();
-
-    $response = $this->actingAs($sender)->put("/messages/{$draft->id}", [
-        'intent' => 'send',
-        'recipient_id' => $recipient->id,
-        'body' => 'Finally ready to send this.',
-    ]);
-
-    $response->assertRedirect(route('correspondence.show', $recipient));
-    $response->assertSessionHas('status', 'message-sent');
-
-    $sealed = $draft->fresh();
-    expect($sealed->is_draft)->toBeFalse();
-    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-14');
-    expect($sealed->sent_at)->not->toBeNull();
-});
-
 test('a letter can be sent directly without ever having been saved as a draft', function () {
     freezeTimeAt('2026-08-10 09:00:00');
 
@@ -200,156 +178,77 @@ test('a sealed letter shows up in its correspondence thread, but a draft to the 
     $response->assertDontSee('Still just a draft.');
 });
 
-// --- Unsealing ---------------------------------------------------------------
-
-test('a sealed letter can be unsealed back into an editable draft before the monday cutoff', function () {
-    freezeTimeAt('2026-08-10 11:59:59'); // one second before the cutoff
-
-    $sender = User::factory()->create();
-    $recipient = User::factory()->create();
-    $sealed = Message::factory()->for($sender, 'sender')->for($recipient, 'recipient')->create([
-        'scheduled_for' => CarbonImmutable::parse('2026-08-16 12:00:00', 'UTC'),
-        'sent_at' => CarbonImmutable::parse('2026-08-10 09:00:00', 'UTC'),
-    ]);
-
-    $response = $this->actingAs($sender)->post("/messages/{$sealed->id}/unseal");
-
-    $response->assertRedirect(route('messages.edit', $sealed));
-    $response->assertSessionHas('status', 'message-unsealed');
-
-    $unsealed = $sealed->fresh();
-    expect($unsealed->is_draft)->toBeTrue();
-    expect($unsealed->scheduled_for)->toBeNull();
-    expect($unsealed->sent_at)->toBeNull();
-});
-
-test('a sealed letter cannot be unsealed once the friday noon cutoff has passed', function () {
-    freezeTimeAt('2026-08-14 12:00:01'); // one second after the cutoff
-
-    $sender = User::factory()->create();
-    $recipient = User::factory()->create();
-    $sealed = Message::factory()->for($sender, 'sender')->for($recipient, 'recipient')->create([
-        'scheduled_for' => CarbonImmutable::parse('2026-08-16 12:00:00', 'UTC'),
-        'sent_at' => CarbonImmutable::parse('2026-08-10 09:00:00', 'UTC'),
-    ]);
-
-    $response = $this->actingAs($sender)->post("/messages/{$sealed->id}/unseal");
-
-    $response->assertForbidden();
-    expect($sealed->fresh()->is_draft)->toBeFalse();
-});
-
-test('a delivered letter can never be unsealed, even before what wouldve been the cutoff', function () {
-    freezeTimeAt('2026-08-14 09:00:00'); // still before the cutoff, but already delivered
-
-    $sender = User::factory()->create();
-    $recipient = User::factory()->create();
-    $delivered = Message::factory()->for($sender, 'sender')->for($recipient, 'recipient')->delivered()->create([
-        'scheduled_for' => CarbonImmutable::parse('2026-08-16 12:00:00', 'UTC'),
-        'sent_at' => CarbonImmutable::parse('2026-08-10 09:00:00', 'UTC'),
-    ]);
-
-    $response = $this->actingAs($sender)->post("/messages/{$delivered->id}/unseal");
-
-    $response->assertForbidden();
-    expect($delivered->fresh()->is_draft)->toBeFalse();
-});
-
-test('a user cannot unseal someone elses letter', function () {
-    freezeTimeAt('2026-08-14 09:00:00');
-
-    $owner = User::factory()->create();
-    $intruder = User::factory()->create();
-    $recipient = User::factory()->create();
-    $sealed = Message::factory()->for($owner, 'sender')->for($recipient, 'recipient')->create([
-        'scheduled_for' => CarbonImmutable::parse('2026-08-16 12:00:00', 'UTC'),
-        'sent_at' => CarbonImmutable::parse('2026-08-10 09:00:00', 'UTC'),
-    ]);
-
-    $this->actingAs($intruder)->post("/messages/{$sealed->id}/unseal")->assertNotFound();
-
-    expect($sealed->fresh()->is_draft)->toBeFalse();
-});
 
 // --- Full end-to-end lifecycle ---------------------------------------------------
 
-test('the full draft, seal, unseal, edit, and reseal lifecycle works end to end', function () {
-    // Saturday
-    freezeTimeAt('2026-08-08 09:00:00');
-
+it('full draft, edit, and seal lifecycle works end to end — and sending is final', function () {
     $sender = User::factory()->create();
     $recipient = User::factory()->create();
 
-    // 1. Start a draft with no recipient yet.
-    $this->actingAs($sender)->post('/messages', [
-        'intent' => 'draft',
-        'body' => 'Dear future reader,',
-    ])->assertSessionHas('status', 'draft-saved');
-
-    $draft = Message::first();
-    expect($draft->is_draft)->toBeTrue();
-    expect($draft->recipient_id)->toBeNull();
-
-    // 2. Come back Sunday and add a recipient plus more text.
-    freezeTimeAt('2026-08-09 9:00:00'); // Sunday
-
-    $this->actingAs($sender)->put("/messages/{$draft->id}", [
+    // 1. Save a draft.
+    $response = $this->actingAs($sender)->post(route('messages.store'), [
         'intent' => 'draft',
         'recipient_id' => $recipient->id,
-        'body' => 'Dear future reader, here is my update.',
-    ])->assertSessionHas('status', 'draft-saved');
+        'body' => 'First draft of the letter.',
+    ]);
 
-    $draft->refresh();
-    expect($draft->is_draft)->toBeTrue();
-    expect($draft->recipient_id)->toBe($recipient->id);
+    $message = Message::first();
 
-    // 3. Seal it before Monday, catching this week's batch.
-    $this->actingAs($sender)->put("/messages/{$draft->id}", [
+    $response->assertRedirect(route('messages.edit', $message));
+    expect($message->is_draft)->toBeTrue();
+    expect($message->sender_id)->toBe($sender->id);
+    expect($message->recipient_id)->toBe($recipient->id);
+    expect($message->sent_at)->toBeNull();
+    expect($message->scheduled_for)->toBeNull();
+
+    // 2. Edit the draft — still a draft, content changes.
+    $this->actingAs($sender)->put(route('messages.update', $message), [
+        'intent' => 'draft',
+        'recipient_id' => $recipient->id,
+        'body' => 'Revised draft, much better now.',
+    ])->assertRedirect(route('messages.edit', $message));
+
+    $message->refresh();
+    expect($message->is_draft)->toBeTrue();
+    expect($message->body)->toBe('Revised draft, much better now.');
+
+    // 3. Seal & send — this is the point of no return.
+    $response = $this->actingAs($sender)->put(route('messages.update', $message), [
         'intent' => 'send',
         'recipient_id' => $recipient->id,
-        'body' => 'Dear future reader, here is my final update.',
-    ])->assertRedirect(route('correspondence.show', $recipient));
+        'body' => 'Revised draft, much better now.',
+    ]);
 
-    $sealed = $draft->fresh();
-    expect($sealed->is_draft)->toBeFalse();
-    expect($sealed->scheduled_for->toDateString())->toBe('2026-08-14');
-    expect($sealed->sent_at)->not->toBeNull();
+    $message->refresh();
+    $response->assertRedirect(route('correspondence.show', $recipient));
+    expect($message->is_draft)->toBeFalse();
+    expect($message->sent_at)->not->toBeNull();
+    expect($message->scheduled_for)->not->toBeNull();
 
-    // 4. Have second thoughts and unseal it.
+    // 4. Sent letters can no longer be edited...
+    $this->actingAs($sender)->get(route('messages.edit', $message))
+        ->assertNotFound();
 
-    $this->actingAs($sender)->post("/messages/{$sealed->id}/unseal")
-        ->assertRedirect(route('messages.edit', $sealed))
-        ->assertSessionHas('status', 'message-unsealed');
+    $this->actingAs($sender)->put(route('messages.update', $message), [
+        'intent' => 'draft',
+        'body' => 'Trying to sneak an edit in.',
+    ])->assertNotFound();
 
-    $unsealed = $sealed->fresh();
-    expect($unsealed->is_draft)->toBeTrue();
-    expect($unsealed->scheduled_for)->toBeNull();
-    expect($unsealed->sent_at)->toBeNull();
+    // 5. ...or deleted...
+    $this->actingAs($sender)->delete(route('messages.destroy', $message))
+        ->assertNotFound();
 
-    // 5. Edit it once more and reseal, still before the cutoff passes.
-    $this->actingAs($sender)->put("/messages/{$unsealed->id}", [
-        'intent' => 'send',
-        'recipient_id' => $recipient->id,
-        'body' => 'Dear future reader, this is really it this time.',
-])->assertRedirect(route('correspondence.show', $recipient));
+    // 6. ...or unsealed back to a draft. There is no unseal route anymore —
+    // sending is final, full stop.
+    expect(Route::has('messages.unseal'))->toBeFalse();
 
-    $final = $unsealed->fresh();
-    expect($final->is_draft)->toBeFalse();
-    expect($final->body)->toBe('Dear future reader, this is really it this time.');
-    expect($final->scheduled_for->toDateString())->toBe('2026-08-14');
+    $message->refresh();
+    expect($message->is_draft)->toBeFalse();
+    expect($message->body)->toBe('Revised draft, much better now.');
 
-    // 6. It now shows up in Sent, and nowhere in Drafts.
+    // 7. The sender can see their own sealed-but-undelivered letter in the
+    // thread (sender-visibility rule), even before delivery.
     $this->actingAs($sender)->get(route('correspondence.show', $recipient))
         ->assertOk()
-        ->assertSee('this is really it this time');
-
-    $this->actingAs($sender)->get('/messages/drafts')
-        ->assertOk()
-        ->assertDontSee('this is really it this time');
-
-    // 7. Once the cutoff passes for good, it can no longer be unsealed.
-    freezeTimeAt('2026-08-14 12:00:01');
-
-    $this->actingAs($sender)->post("/messages/{$final->id}/unseal")->assertForbidden();
-    expect($final->fresh()->is_draft)->toBeFalse();
+        ->assertSee('Revised draft, much better now.');
 });

@@ -195,19 +195,6 @@ public function show(Request $request, User $person): View
         return redirect()->route('messages.drafts')->with('status', 'draft-deleted');
     }
 
-    public function unseal(Request $request, Message $message): RedirectResponse
-    {
-        abort_unless($message->sender_id === $request->user()->id, 404);
-        abort_unless($message->canUnseal(), 403);
-
-        $message->fill([
-            'is_draft' => true,
-            'scheduled_for' => null,
-            'sent_at' => null,
-        ])->save();
-
-        return redirect()->route('messages.edit', $message)->with('status', 'message-unsealed');
-    }
 
     protected function save(Request $request, Message $message): RedirectResponse
     {

@@ -46,8 +46,8 @@
                             ->subDays(config('pennypost.cutoff_days_before_batch'))
                             ->format('l');
                     @endphp
-                    {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, seal your letter before :day noon.', ['day' => $cutoffDayName]) }}
-                    {{ __('Messages are delivered at noon GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not.') }}
+                    {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, send your letter before :day.', ['day' => $cutoffDayName]) }}
+                    {{ __('Messages are delivered at 12pm GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not.') }}
                 </p>
             </section>
 

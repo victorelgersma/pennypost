@@ -47,13 +47,6 @@ class Message extends Model
         return $this->delivered_at !== null;
     }
 
-    public function canUnseal(): bool
-    {
-        return ! $this->is_draft
-            && ! $this->isDelivered()
-            && $this->unsealDeadline() !== null
-            && CarbonImmutable::now()->lessThanOrEqualTo($this->unsealDeadline());
-    }
 
     public function scopeDelivered(Builder $query): Builder
     {
@@ -106,10 +99,6 @@ class Message extends Model
         return $sentAt->next(CarbonImmutable::FRIDAY)->setTime(12, 0);
     }
 
-    public function unsealDeadline(): ?CarbonImmutable
-    {
-        return $this->scheduled_for?->subDays(config('pennypost.cutoff_days_before_batch'));
-    }
 
     public static function humanDayLabel(CarbonInterface $date): string
     {

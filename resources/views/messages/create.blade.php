@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+        <div x-data style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
             <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
                 {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
             </h2>
@@ -9,7 +9,7 @@
                 <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost">
                     {{ __('Save draft') }}
                 </button>
-                <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid"
+                <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid"
                     style="padding: 11px 28px; font-size: 15px;">
                     {{ __('Seal & send') }}
                 </button>
@@ -19,21 +19,33 @@
 
     <div class="py-12">
         <div class="pp-content-wrap">
+
             @if (session('status') === 'draft-saved')
                         @php
                             $cutoffAt = $nextBatch->copy()->subDays(config('pennypost.cutoff_days_before_batch'));
+                            $totalMinutes = max(0, (int) now()->diffInMinutes($cutoffAt));
+                            $daysRemaining = intdiv($totalMinutes, 1440);
+                            $hoursRemaining = intdiv($totalMinutes % 1440, 60);
+                            $minutesRemaining = $totalMinutes % 60;
+
+                            $timeRemaining = match (true) {
+                                $totalMinutes < 60 => trans_choice(':count minute|:count minutes', $minutesRemaining, ['count' => $minutesRemaining]),
+                                $daysRemaining === 0 => trans_choice(':count hour|:count hours', $hoursRemaining, ['count' => $hoursRemaining]),
+                                default => trans_choice(':count day|:count days', $daysRemaining, ['count' => $daysRemaining]),
+                            };
                         @endphp
                         <div class="pp-stamp-badge text-sm mb-4">
-                            {{ __('Draft saved. Seal & send before :cutoff if you want your mail to arrive :delivery.', [
-                    'cutoff' => \App\Models\Message::humanDayLabel($cutoffAt) . ' at ' . $cutoffAt->format('H:i'),
+                            {{ __('Draft saved. You have :time to send it in order to have your mail arrive :delivery.', [
+                    'time' => $timeRemaining,
                     'delivery' => \App\Models\Message::humanDayLabel($nextBatch),
                 ]) }}
                         </div>
-            @elseif (session('status') === 'message-unsealed')
-                <div class="pp-stamp-badge text-sm mb-4">{{ __('Unsealed — this is a draft again.') }}</div>
             @endif
 
             <div class="pp-letter-plain p-8 sm:p-12">
+                <p class="text-xs pp-mono text-center mb-6" style="color: var(--ink-soft);">
+                    {{ __('Sending is final — letters can\'t be unsent or edited once sealed.') }}
+                </p>
                 <form id="letter-form" method="POST"
                     action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}" x-data="{
             query: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
@@ -111,6 +123,25 @@
                 </form>
             </div>
 
+            <x-modal name="confirm-send" :show="false" maxWidth="md">
+                <div class="p-6 sm:p-8">
+                    <h2 class="pp-serif text-lg font-medium" style="color: var(--ink);">
+                        {{ __('Seal this letter?') }}
+                    </h2>
+                    <p class="mt-3 text-sm" style="color: var(--ink-soft);">
+                        {{ __('Sending is final. Once a letter is sealed there is no way to unsend, unseal, or edit it — not even before delivery.') }}
+                    </p>
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button type="button" class="pp-btn pp-btn-ghost" @click="$dispatch('close-modal', 'confirm-send')">
+                            {{ __('Keep editing') }}
+                        </button>
+                        <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid">
+                            {{ __('Yes, seal & send') }}
+                        </button>
+                    </div>
+                </div>
+            </x-modal>
+
             @if ($letter->exists && $letter->is_draft)
                 <form method="POST" action="{{ route('messages.destroy', $letter) }}"
                     onsubmit="return confirm('{{ __('Delete this draft for good?') }}')" class="mt-4 text-right">
@@ -125,3 +156,4 @@
         </div>
     </div>
 </x-app-layout>
+

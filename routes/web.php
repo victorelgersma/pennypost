@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::put('/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
     Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
-    Route::post('/messages/{message}/unseal', [MessageController::class, 'unseal'])->name('messages.unseal');
 
     Route::get('/users/search', UserSearchController::class)->name('users.search');
     Route::get('/directory', [UserDirectoryController::class, 'index'])->name('directory.index');

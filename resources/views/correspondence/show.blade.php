@@ -34,31 +34,12 @@
             @endif
         </div>
 
-        @php
-            $currentLetter = $messages->first();
-        @endphp
-
-        @if ($currentLetter && !$currentLetter->isDelivered() && $currentLetter->canUnseal())
-            <div class="flex items-center justify-between gap-4 flex-wrap mt-4 pt-4"
-                style="border-top: 1px solid var(--line);">
-                <p class="text-xs pp-mono" style="color: var(--ink-soft);">
-                    {{ __('Unseal until') }} {{ $currentLetter->unsealDeadline()->format('D, j M \a\t H:i') }} GMT
-                    {{ __('to keep editing.') }}
-                </p>
-                <form method="POST" action="{{ route('messages.unseal', $currentLetter) }}">
-                    @csrf
-                    <button type="submit" class="pp-btn pp-btn-ghost">
-                        {{ __('Unseal & Edit') }}
-                    </button>
-                </form>
-            </div>
-        @endif
     </x-slot>
     <div>
         <div class="pp-content-wrap">
             @if (session('status') === 'message-sent')
                         <div class="pp-stamp-badge text-sm mb-4">
-                            {{ __('Sealed! Your letter will arrive on :day the :date at noon.', [
+                            {{ __('Sealed! Your letter will arrive on :day the :date.', [
                     'day' => session('deliveryDayName'),
                     'date' => session('deliveryDayOrdinal'),
                 ]) }}
