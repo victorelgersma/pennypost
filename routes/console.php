@@ -13,3 +13,7 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('messages:deliver')
     ->weeklyOn(5, '12:00') // Friday
     ->timezone('UTC');
+
+Schedule::command('backup:database')
+        ->weeklyOn(0, '03:00') // Sunday, off-peak
+        ->timezone('UTC');
