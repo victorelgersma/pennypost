@@ -1,5 +1,7 @@
 Defo
 
+- [ ] bugfix settings page
+- [ ] create simple deploy script that runs ON the server (instead of retyping those commands)
 - [ ] allow users to download entire correspondence in PDF format
 - [ ] change font to EB Garamond of the main letter writing
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.

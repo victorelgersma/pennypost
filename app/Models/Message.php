@@ -122,4 +122,27 @@ class Message extends Model
             default => $date->format('D, j M'),
         };
     }
+
+    /**
+     * The next delivery event, full stop — regardless of whether a new
+     * letter could still catch it. Distinct from nextBatchFor(): if it's
+     * currently Friday before noon, that means today's batch (built from
+     * letters sealed before this week's cutoff) hasn't gone out yet, so
+     * "next delivery" is today, not next week.
+     */
+    public static function nextDeliveryAt(?CarbonInterface $asOf = null): CarbonImmutable
+    {
+        $asOf = CarbonImmutable::instance($asOf ?? now())->setTimezone('UTC');
+        $today = $asOf->startOfDay();
+
+        if ($today->isFriday()) {
+            $todayNoon = $today->setTime(12, 0);
+
+            if ($asOf->lessThanOrEqualTo($todayNoon)) {
+                return $todayNoon;
+            }
+        }
+
+        return $asOf->next(CarbonImmutable::FRIDAY)->setTime(12, 0);
+    }
 }

@@ -20,8 +20,8 @@ test('a message sent exactly at the monday noon utc cutoff still makes that batc
     expect($batch->toDateString())->toBe('2026-08-14');
 });
 
-test('a message sent just after the tuesday noon utc cutoff waits an extra week', function () {
-    $batch = Message::nextBatchFor(CarbonImmutable::parse('2026-08-11 12:00:01', 'UTC'));
+test('a message sent just after the wednesday noon utc cutoff waits an extra week', function () {
+    $batch = Message::nextBatchFor(CarbonImmutable::parse('2026-08-12 12:00:01', 'UTC'));
 
     expect($batch->toDateString())->toBe('2026-08-21');
 });

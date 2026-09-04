@@ -16,7 +16,9 @@
                 <div class="max-w-xl" x-data="{
                     time: '',
                     countdown: '',
+                    deliveryCountdown: '',
                     pickupAt: new Date('{{ $nextPickup->toIso8601String() }}').getTime(),
+                    deliveryAt: new Date('{{ $nextBatch->toIso8601String() }}').getTime(),
                     tick() {
                         const now = new Date();
                         this.time = now.toLocaleTimeString('en-GB', {
@@ -26,10 +28,19 @@
                             second: '2-digit',
                         });
 
-                        const remaining = this.pickupAt - now.getTime();
+                        this.countdown = this.formatRemaining(
+                            this.pickupAt - now.getTime(),
+                            '{{ __('Pickup has passed — check back after delivery.') }}'
+                        );
+
+                        this.deliveryCountdown = this.formatRemaining(
+                            this.deliveryAt - now.getTime(),
+                            '{{ __('Delivering now…') }}'
+                        );
+                    },
+                    formatRemaining(remaining, passedLabel) {
                         if (remaining <= 0) {
-                            this.countdown = '{{ __('Pickup has passed — check back after delivery.') }}';
-                            return;
+                            return passedLabel;
                         }
 
                         const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
@@ -37,7 +48,7 @@
                         const minutes = Math.floor((remaining / (1000 * 60)) % 60);
                         const seconds = Math.floor((remaining / 1000) % 60);
 
-                        this.countdown = days + 'd ' + String(hours).padStart(2, '0') + 'h '
+                        return days + 'd ' + String(hours).padStart(2, '0') + 'h '
                             + String(minutes).padStart(2, '0') + 'm '
                             + String(seconds).padStart(2, '0') + 's';
                     },
@@ -71,6 +82,7 @@
                         <p class="mt-1 pp-serif" style="color: var(--ink);">
                             {{ __('Friday :date at noon GMT.', ['date' => $nextBatch->format('j F')]) }}
                         </p>
+                        <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="deliveryCountdown"></p>
                     </div>
                 </div>
             </div>
