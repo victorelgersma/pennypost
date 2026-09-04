@@ -11,79 +11,82 @@
                     <x-icons.pen />
                 </a>
             </div>
-
-            @if ($messages->hasPages())
-                <div class="flex items-center" style="gap: 20px;">
-                    @if ($messages->previousPageUrl())
-                        <a href="{{ $messages->previousPageUrl() }}"
-                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
-                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
-                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __('← :date', ['date' => $newerLetterDate->format('jS F')]) }}
-                        </a>
-                    @endif
-                    @if ($messages->hasMorePages())
-                        <a href="{{ $messages->nextPageUrl() }}"
-                            style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
-                            onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
-                            onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __(':date →', ['date' => $olderLetterDate->format('jS F')]) }}
-                        </a>
-                    @endif
-                </div>
-            @endif
         </div>
-
     </x-slot>
-    <div>
-        <div class="pp-content-wrap">
-            @if (session('status') === 'message-sent')
+    <div class="py-12">
+        <div class="mx-auto" style="max-width: 74rem; padding-inline: clamp(1.5rem, 6vw, 4rem);">
+            <div class="flex items-start gap-10">
+                @if ($letters->isNotEmpty())
+                    <nav class="hidden md:block shrink-0"
+                        style="width: 150px; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto;">
+                        <p class="pp-mono text-xs mb-3" style="color: var(--ink-soft); letter-spacing: 0.08em;">
+                            {{ __('JUMP TO') }}
+                        </p>
+                        <ul class="space-y-2">
+                            @foreach ($letters as $letter)
+                                <li>
+                                    <a href="#letter-{{ $letter->id }}" class="pp-mono text-xs block"
+                                        style="color: var(--ink-soft); text-decoration: none; line-height: 1.5;"
+                                        onmouseover="this.style.color='var(--ink)'"
+                                        onmouseout="this.style.color='var(--ink-soft)'">
+                                        {{ ($letter->delivered_at ?? $letter->sent_at)->format('jS F') }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                @endif
+
+                <div class="flex-1 min-w-0" style="max-width: 57.5rem;">
+                    @if (session('status') === 'message-sent')
                         <div class="pp-stamp-badge text-sm mb-4">
                             {{ __('Sealed! Your letter will arrive on :day the :date.', [
-                    'day' => session('deliveryDayName'),
-                    'date' => session('deliveryDayOrdinal'),
-                ]) }}
+                                'day' => session('deliveryDayName'),
+                                'date' => session('deliveryDayOrdinal'),
+                            ]) }}
                         </div>
-            @endif
+                    @endif
 
+                    <div class="pp-letter-plain">
+                        @forelse ($letters as $letter)
+                            <div id="letter-{{ $letter->id }}" class="pp-letter-entry p-8 sm:p-12"
+                                style="scroll-margin-top: 24px;">
 
-            <div class="pp-letter-plain">
-                @forelse ($messages as $letter)
-                    <div class="pp-letter-entry p-8 sm:p-12">
+                                <div class="text-right">
+                                    @if ($letter->isDelivered())
+                                        <p class="pp-serif" style="color: var(--ink-soft);">
+                                            {{ $letter->delivered_at->format('j F Y') }}
+                                        </p>
+                                    @else
+                                        <p class="pp-serif" style="color: var(--ink-soft);">
+                                            {{ $letter->sent_at->format('j F Y') }}
+                                        </p>
+                                    @endif
+                                </div>
 
-                        <div class="text-right">
-                            @if ($letter->isDelivered())
-                                <p class="pp-serif" style="color: var(--ink-soft);">
-                                    {{ $letter->delivered_at->format('j F Y') }}
+                                <p class="pp-serif mt-6 text-center"
+                                    style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
+                                    <span class="italic">{{ __('To') }}</span>
+                                    <span class="uppercase" style="margin-left: 0.75rem;">
+                                        {{ $letter->recipient_id === auth()->id() ? auth()->user()->name : $person->name }}
+                                    </span>
                                 </p>
-                            @else
-                                <p class="pp-serif" style="color: var(--ink-soft);">
-                                    {{ $letter->sent_at->format('j F Y') }}
+
+                                <p class="mt-8 whitespace-pre-wrap pp-serif"
+                                    style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">{{ $letter->body }}</p>
+
+                                <p class="mt-8 text-right pp-serif"
+                                    style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
+                                    [{{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}]
                                 </p>
-                            @endif
-                        </div>
-
-                        <p class="pp-serif mt-6 text-center"
-                            style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
-                            <span class="italic">{{ __('To') }}</span>
-                            <span class="uppercase" style="margin-left: 0.75rem;">
-                                {{ $letter->recipient_id === auth()->id() ? auth()->user()->name : $person->name }}
-                            </span>
-                        </p>
-
-                        <p class="mt-8 whitespace-pre-wrap pp-serif"
-                            style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">{{ $letter->body }}</p>
-
-                        <p class="mt-8 text-right pp-serif"
-                            style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
-                            [{{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}]
-                        </p>
+                            </div>
+                        @empty
+                            <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
+                                {{ __('Nothing here yet.') }}
+                            </div>
+                        @endforelse
                     </div>
-                @empty
-                    <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
-                        {{ __('Nothing here yet.') }}
-                    </div>
-                @endforelse
+                </div>
             </div>
         </div>
     </div>

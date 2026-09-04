@@ -47,7 +47,7 @@
                             ->format('l');
                     @endphp
                     {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, send your letter before :day.', ['day' => $cutoffDayName]) }}
-                    {{ __('Messages are delivered at 12pm GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not.') }}
+                    {{ __('Delivery happens at a fixed moment in GMT — see the clock in your Settings page for exactly when that lands in your own time zone.') }}
                 </p>
             </section>
 
@@ -77,7 +77,7 @@
                                     ->subDays(config('pennypost.cutoff_days_before_batch'))
                                     ->format('l');
                             @endphp
-                            {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, seal your letter before :day noon.', ['day' => $cutoffDayName]) }}
+                            {{ __('Messages are delivered on Fridays. To make it into that Friday\'s batch, send your letter before :day.', ['day' => $cutoffDayName]) }}
                         </p>
                     </div>
                 </div>
@@ -121,7 +121,9 @@
                     </div>
                     <div>
                         <h3 class="pp-stamp-title">{{ __('What time do I get my mail?') }}</h3>
-                        {{ __('Messages are delivered on Fridays at noon GMT. This means delivery lands at noon London time in winter, but 1pm London time in summer, since London clocks move forward for British Summer Time while GMT does not. We have put a GMT clock in the Settings page.') }}
+                        <p class="pp-stamp-body">
+                            {{ __('Messages are delivered on Fridays, at a fixed moment in GMT. Because GMT doesn\'t observe British Summer Time, that moment lands at a different local London time depending on the season. We\'ve put a live GMT clock and countdown on the Settings page so you can see exactly when your letters will land, wherever you are.') }}
+                        </p>
                     </div>
                 </div>
             </section>

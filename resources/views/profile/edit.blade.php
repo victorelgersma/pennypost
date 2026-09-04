@@ -80,7 +80,7 @@
                             {{ __('Next batch delivered') }}
                         </h3>
                         <p class="mt-1 pp-serif" style="color: var(--ink);">
-                            {{ __('Friday :date at noon GMT.', ['date' => $nextBatch->format('j F')]) }}
+                            {{ __('Friday :date at 12:00 GMT.', ['date' => $nextBatch->format('j F')]) }}
                         </p>
                         <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="deliveryCountdown"></p>
                     </div>

@@ -21,11 +21,6 @@ return [
     | Batch Cutoff
     |--------------------------------------------------------------------------
     |
-    | Letters are delivered every Friday at noon UTC. To catch a given
-    | week's batch, a letter must be sealed this many days before that
-    | Friday. A sealed letter can also be unsealed back to a draft any
-    | time up until this same cutoff. See Message::nextBatchFor() and
-    | Message::unsealDeadline().
     |
     */
 

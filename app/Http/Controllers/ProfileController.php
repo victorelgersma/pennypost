@@ -90,7 +90,6 @@ class ProfileController extends Controller
         return redirect()->to('/')->with('status', 'account-deleted');
     }
 
-    // ... inside the class, alongside edit()/update()/destroy() ...
 
     /**
      * Everything this user is entitled to take with them: their account
