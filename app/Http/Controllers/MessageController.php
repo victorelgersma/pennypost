@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -67,45 +69,76 @@ class MessageController extends Controller
      * undelivered letters to you are excluded — those stay hidden until
      * post day.
      */
-        public function show(Request $request, User $person): View
-    {
-        $userId = $request->user()->id;
 
-        abort_if($person->id === $userId, 404);
+/**
+ * The thread with one person: every delivered letter between you two,
+ * plus any of your own sealed-but-undelivered letters to them. Their
+ * undelivered letters to you are excluded — those stay hidden until
+ * post day.
+ */
+public function show(Request $request, User $person): View
+{
+    $userId = $request->user()->id;
 
-        $baseQuery = fn () => Message::query()
-            ->sent()
-            ->where(function ($query) use ($userId, $person) {
-                $query->where(function ($q) use ($userId, $person) {
-                    $q->where('sender_id', $userId)->where('recipient_id', $person->id);
-                })->orWhere(function ($q) use ($userId, $person) {
-                    $q->where('sender_id', $person->id)->where('recipient_id', $userId);
-                });
-            })
-            ->where(function ($query) use ($userId) {
-                $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
-            })
-            ->orderByRaw('COALESCE(delivered_at, sent_at) desc');
+    abort_if($person->id === $userId, 404);
 
-        $messages = $baseQuery()->paginate(1)->withQueryString();
+    $baseQuery = fn () => Message::query()
+        ->sent()
+        ->where(function ($query) use ($userId, $person) {
+            $query->where(function ($q) use ($userId, $person) {
+                $q->where('sender_id', $userId)->where('recipient_id', $person->id);
+            })->orWhere(function ($q) use ($userId, $person) {
+                $q->where('sender_id', $person->id)->where('recipient_id', $userId);
+            });
+        })
+        ->where(function ($query) use ($userId) {
+            $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
+        });
 
-        // One page = one letter, so "older"/"newer" is just the letter sitting
-        // immediately before/after this one in the same ordered list — cheap
-        // to look up directly rather than re-deriving from $messages.
-        $offset = ($messages->currentPage() - 1) * $messages->perPage();
+    // The day a letter is grouped under — delivered_at for delivered mail,
+    // sent_at for our own still-sealed letters, matching the ordering rule
+    // used everywhere else in this thread.
+    $dateExpr = 'date(coalesce(delivered_at, sent_at))';
 
-        $olderLetter = $baseQuery()->skip($offset + 1)->take(1)->first(['delivered_at', 'sent_at']);
-        $newerLetter = $offset > 0
-            ? $baseQuery()->skip($offset - 1)->take(1)->first(['delivered_at', 'sent_at'])
-            : null;
+    // One page per *day*, not per letter — several letters that landed (or
+    // were sent) together should read together, the way a few envelopes
+    // arriving in the same post would.
+    $dates = $baseQuery()
+        ->selectRaw("{$dateExpr} as page_date")
+        ->distinct()
+        ->orderByRaw("{$dateExpr} desc")
+        ->pluck('page_date');
 
-        return view('correspondence.show', [
-            'person' => $person,
-            'messages' => $messages,
-            'olderLetterDate' => $olderLetter?->delivered_at ?? $olderLetter?->sent_at,
-            'newerLetterDate' => $newerLetter?->delivered_at ?? $newerLetter?->sent_at,
-        ]);
-    }
+    $page = max(1, (int) $request->query('page', 1));
+    $currentDate = $dates->get($page - 1);
+
+    $letters = $currentDate
+        ? $baseQuery()
+            ->whereRaw("{$dateExpr} = ?", [$currentDate])
+            ->orderByRaw('coalesce(delivered_at, sent_at) desc')
+            ->get()
+        : collect();
+
+    $messages = new LengthAwarePaginator(
+        $letters,
+        $dates->count(),
+        1,
+        $page,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    // Dates are sorted newest-first, so "older" is the next index along
+    // and "newer" is the one before it.
+    $olderDate = $dates->get($page);
+    $newerDate = $page > 1 ? $dates->get($page - 2) : null;
+
+    return view('correspondence.show', [
+        'person' => $person,
+        'messages' => $messages,
+        'olderLetterDate' => $olderDate ? CarbonImmutable::parse($olderDate) : null,
+        'newerLetterDate' => $newerDate ? CarbonImmutable::parse($newerDate) : null,
+    ]);
+}
 
     public function drafts(Request $request): View
     {

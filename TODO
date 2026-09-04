@@ -1,6 +1,8 @@
 Defo
 
-- [ ] bugfix settings page
+- [ ] have a draft option and a send option, no unsend
+- [ ] add notification when someone has a penny post / read or unread messages
+- [x] bugfix settings page
 - [ ] create simple deploy script that runs ON the server (instead of retyping those commands)
 - [ ] allow users to download entire correspondence in PDF format
 - [ ] change font to EB Garamond of the main letter writing

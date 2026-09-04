@@ -156,6 +156,13 @@
         min-height: 70vh; /* new */
     }
 
+     /* Letters themselves get EB Garamond instead of the site-wide Fraunces —
+      *        scoped to .pp-letter-plain so nothing outside the letter surface
+      *               (nav, headers, cards, settings) is affected. */
+    .pp-letter-plain .pp-serif {
+        font-family: "EB Garamond", ui-serif, Georgia, serif;
+     }
+
     .pp-paper-card {
         --paper: var(--letter-paper);
         --paper-card: var(--letter-paper-card);

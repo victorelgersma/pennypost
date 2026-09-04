@@ -19,24 +19,16 @@
                             style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
                             onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
                             onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __('← Next') }}
+                            {{ __('← :date', ['date' => $newerLetterDate->format('jS F')]) }}
                         </a>
-                    @else
-                        <span style="font-size: 13px; color: var(--line); cursor: default;">
-                            {{ __('← Next') }}
-                        </span>
                     @endif
                     @if ($messages->hasMorePages())
                         <a href="{{ $messages->nextPageUrl() }}"
                             style="font-size: 13px; color: var(--ink-soft); text-decoration: none;"
                             onmouseover="this.style.textDecoration='underline'; this.style.color='var(--ink)'"
                             onmouseout="this.style.textDecoration='none'; this.style.color='var(--ink-soft)'">
-                            {{ __('Previous →') }}
+                            {{ __(':date →', ['date' => $olderLetterDate->format('jS F')]) }}
                         </a>
-                    @else
-                        <span style="font-size: 13px; color: var(--line); cursor: default;">
-                            {{ __('Previous →') }}
-                        </span>
                     @endif
                 </div>
             @endif
