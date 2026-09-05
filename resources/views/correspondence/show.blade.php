@@ -15,6 +15,20 @@
     </x-slot>
     <div class="py-12">
         <div class="mx-auto" style="max-width: 74rem; padding-inline: clamp(1.5rem, 6vw, 4rem);">
+
+        @if ($letters->isNotEmpty())
+            <div class="md:hidden mb-6 flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: none;">
+                @foreach ($letters as $letter)
+                    <a href="#letter-{{ $letter->id }}" class="pp-mono text-xs shrink-0"
+                        style="color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px;
+                               padding: 4px 10px; text-decoration: none; white-space: nowrap;">
+                        {{ ($letter->delivered_at ?? $letter->sent_at)->format('j M') }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
+
             <div class="flex items-start gap-10">
                 @if ($letters->isNotEmpty())
                     <nav class="hidden md:block shrink-0"
