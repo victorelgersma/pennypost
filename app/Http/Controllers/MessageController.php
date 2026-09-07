@@ -160,65 +160,90 @@ class MessageController extends Controller
     }
 
 
-    protected function save(Request $request, Message $message): RedirectResponse
-    {
-        $wantsToSend = $request->input('intent', 'send') === 'send';
 
-        $notPennyPostMember = "That doesn't look like a Penny Post member — pick someone from the suggestions.";
+protected function save(Request $request, Message $message): RedirectResponse
+{
+    $wantsToSend = $request->input('intent', 'send') === 'send';
 
-        if (! $wantsToSend) {
-            $validated = $request->validate([
-                'recipient_id' => [
-                    'nullable', 'integer',
-                    Rule::exists('users', 'id')->whereNull('deleted_at'),
-                    Rule::notIn([$request->user()->id]),
-                ],
-                'body' => ['nullable', 'string', 'max:'.config('pennypost.max_letter_length')],
-            ], [
-                'recipient_id.exists' => $notPennyPostMember,
-                'body.max' => __('You have run out of ink.'),
-            ]);
+    $notPennyPostMember = "That doesn't look like a Penny Post member — pick someone from the suggestions.";
 
-            $message->sender_id = $request->user()->id;
-            $message->fill([
-                'recipient_id' => $validated['recipient_id'] ?? null,
-                'body' => $validated['body'] ?? '',
-                'is_draft' => true,
-                'scheduled_for' => null,
-                'sent_at' => null,
-            ])->save();
+    // Blank rows from the "add another link" UI shouldn't count as
+    // enclosures, and shouldn't trip url validation either.
+    $request->merge([
+        'enclosures' => collect($request->input('enclosures', []))
+            ->map(fn ($url) => trim((string) $url))
+            ->filter()
+            ->values()
+            ->all(),
+    ]);
 
-            return redirect()->route('messages.edit', $message)->with('status', 'draft-saved');
-        }
+    $enclosureRules = [
+        'enclosures' => ['nullable', 'array', 'max:5'],
+        'enclosures.*' => ['url', 'max:2048'],
+    ];
+    $enclosureMessages = [
+        'enclosures.*.url' => __('One of those links doesn\'t look right.'),
+    ];
 
+    if (! $wantsToSend) {
         $validated = $request->validate([
             'recipient_id' => [
-                'required',
-                'integer',
+                'nullable', 'integer',
                 Rule::exists('users', 'id')->whereNull('deleted_at'),
                 Rule::notIn([$request->user()->id]),
             ],
-            'body' => ['required', 'string', 'max:'.config('pennypost.max_letter_length')],
+            'body' => ['nullable', 'string', 'max:'.config('pennypost.max_letter_length')],
+            ...$enclosureRules,
         ], [
-            'recipient_id.required' => $notPennyPostMember,
             'recipient_id.exists' => $notPennyPostMember,
-            'recipient_id.not_in' => "You can't send a message to yourself.", // TODO: rethink this - you can send messages to yourself in WhatsApp, why not here?
             'body.max' => __('You have run out of ink.'),
+            ...$enclosureMessages,
         ]);
 
         $message->sender_id = $request->user()->id;
         $message->fill([
-            'recipient_id' => $validated['recipient_id'],
-            'body' => $validated['body'],
-            'is_draft' => false,
-            'scheduled_for' => Message::nextBatchFor(),
-            'sent_at' => now(),
+            'recipient_id' => $validated['recipient_id'] ?? null,
+            'body' => $validated['body'] ?? '',
+            'enclosures' => ! empty($validated['enclosures']) ? $validated['enclosures'] : null,
+            'is_draft' => true,
+            'scheduled_for' => null,
+            'sent_at' => null,
         ])->save();
 
-        return redirect()
-            ->route('correspondence.show', $message->recipient)
-            ->with('status', 'message-sent')
-            ->with('deliveryDayName', $message->scheduled_for->format('l'))
-            ->with('deliveryDayOrdinal', $message->scheduled_for->format('jS'));
+        return redirect()->route('messages.edit', $message)->with('status', 'draft-saved');
     }
+
+    $validated = $request->validate([
+        'recipient_id' => [
+            'required',
+            'integer',
+            Rule::exists('users', 'id')->whereNull('deleted_at'),
+            Rule::notIn([$request->user()->id]),
+        ],
+        'body' => ['required', 'string', 'max:'.config('pennypost.max_letter_length')],
+        ...$enclosureRules,
+    ], [
+        'recipient_id.required' => $notPennyPostMember,
+        'recipient_id.exists' => $notPennyPostMember,
+        'recipient_id.not_in' => "You can't send a message to yourself.", // TODO: rethink this - you can send messages to yourself in WhatsApp, why not here?
+        'body.max' => __('You have run out of ink.'),
+        ...$enclosureMessages,
+    ]);
+
+    $message->sender_id = $request->user()->id;
+    $message->fill([
+        'recipient_id' => $validated['recipient_id'],
+        'body' => $validated['body'],
+        'enclosures' => ! empty($validated['enclosures']) ? $validated['enclosures'] : null,
+        'is_draft' => false,
+        'scheduled_for' => Message::nextBatchFor(),
+        'sent_at' => now(),
+    ])->save();
+
+    return redirect()
+        ->route('correspondence.show', $message->recipient)
+        ->with('status', 'message-sent')
+        ->with('deliveryDayName', $message->scheduled_for->format('l'))
+        ->with('deliveryDayOrdinal', $message->scheduled_for->format('jS'));
+}
 }

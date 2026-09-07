@@ -93,6 +93,27 @@
                                     style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
                                     [{{ $letter->sender_id === auth()->id() ? auth()->user()->name : $person->name }}]
                                 </p>
+
+                                @if ($letter->hasEnclosures())
+                                    <div class="mt-8 space-y-3">
+                                        <p class="pp-mono text-xs" style="color: var(--ink-soft); letter-spacing: 0.08em; margin: 0 0 4px 16px;">
+                                            {{ __('ENCLOSED') }}
+                                        </p>
+                                        @foreach ($letter->enclosures as $url)
+                                            <div class="pp-enclosure">
+                                                @if (count($letter->enclosures) > 1)
+                                                    <p class="pp-mono text-xs" style="color: var(--ink-soft); margin: 0 0 2px;">
+                                                        {{ __('#:number', ['number' => $loop->iteration]) }}
+                                                    </p>
+                                                @endif
+<a href="{{ $url }}" target="_blank" rel="noopener" class="pp-mono"
+   style="color: var(--ink); text-decoration: underline; text-underline-offset: 3px;">
+    {{ $url }}
+</a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         @empty
                             <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
@@ -105,3 +126,4 @@
         </div>
     </div>
 </x-app-layout>
+

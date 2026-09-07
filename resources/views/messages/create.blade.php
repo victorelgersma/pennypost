@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div x-data style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
             <h2 class="pp-serif font-semibold text-xl" style="color: var(--ink);">
                 {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
             </h2>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3" x-data>
                 <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost">
                     {{ __('Save draft') }}
                 </button>
@@ -21,56 +21,57 @@
         <div class="pp-content-wrap">
 
             @if (session('status') === 'draft-saved')
-                        @php
-                            $cutoffAt = $nextBatch->copy()->subDays(config('pennypost.cutoff_days_before_batch'));
-                            $totalMinutes = max(0, (int) now()->diffInMinutes($cutoffAt));
-                            $daysRemaining = intdiv($totalMinutes, 1440);
-                            $hoursRemaining = intdiv($totalMinutes % 1440, 60);
-                            $minutesRemaining = $totalMinutes % 60;
+                @php
+                    $cutoffAt = $nextBatch->copy()->subDays(config('pennypost.cutoff_days_before_batch'));
+                    $totalMinutes = max(0, (int) now()->diffInMinutes($cutoffAt));
+                    $daysRemaining = intdiv($totalMinutes, 1440);
+                    $hoursRemaining = intdiv($totalMinutes % 1440, 60);
+                    $minutesRemaining = $totalMinutes % 60;
 
-                            $timeRemaining = match (true) {
-                                $totalMinutes < 60 => trans_choice(':count minute|:count minutes', $minutesRemaining, ['count' => $minutesRemaining]),
-                                $daysRemaining === 0 => trans_choice(':count hour|:count hours', $hoursRemaining, ['count' => $hoursRemaining]),
-                                default => trans_choice(':count day|:count days', $daysRemaining, ['count' => $daysRemaining]),
-                            };
-                        @endphp
-                        <div class="pp-stamp-badge text-sm mb-4">
-                            {{ __('Draft saved. You have :time to send it in order to have your mail arrive :delivery.', [
-                    'time' => $timeRemaining,
-                    'delivery' => \App\Models\Message::humanDayLabel($nextBatch),
-                ]) }}
-                        </div>
+                    $timeRemaining = match (true) {
+                        $totalMinutes < 60 => trans_choice(':count minute|:count minutes', $minutesRemaining, ['count' => $minutesRemaining]),
+                        $daysRemaining === 0 => trans_choice(':count hour|:count hours', $hoursRemaining, ['count' => $hoursRemaining]),
+                        default => trans_choice(':count day|:count days', $daysRemaining, ['count' => $daysRemaining]),
+                    };
+                @endphp
+                <div class="pp-stamp-badge text-sm mb-4">
+                    {{ __('Draft saved. You have :time to send it in order to have your mail arrive :delivery.', [
+                        'time' => $timeRemaining,
+                        'delivery' => \App\Models\Message::humanDayLabel($nextBatch),
+                    ]) }}
+                </div>
             @endif
 
-            <div class="pp-letter-plain p-8 sm:p-12">
+            <div class="pp-letter-plain p-8 sm:p-12" x-data="{
+                    query: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
+                    recipientId: @js(old('recipient_id', $letter->recipient_id ?? request('to_id', ''))),
+                    lastSelectedQuery: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
+                    results: [],
+                    open: false,
+                    enclosureUrls: @js(old('enclosures', $letter->enclosures ?? [])),
+                    search() {
+                        if (this.query !== this.lastSelectedQuery) {
+                            this.recipientId = '';
+                        }
+
+                        if (this.query.length < 1) { this.results = []; this.open = false; return; }
+                        fetch(`{{ route('users.search') }}?q=${encodeURIComponent(this.query)}`)
+                            .then(r => r.json())
+                            .then(data => { this.results = data; this.open = data.length > 0; });
+                    },
+                    select(user) {
+                        this.recipientId = user.id;
+                        this.query = user.name;
+                        this.lastSelectedQuery = user.name;
+                        this.open = false;
+                        this.results = [];
+                    },
+                }">
                 <p class="text-xs pp-mono text-center mb-6" style="color: var(--ink-soft);">
                     {{ __('Sending is final — letters can\'t be unsent or edited once sealed.') }}
                 </p>
                 <form id="letter-form" method="POST"
-                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}" x-data="{
-            query: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
-            recipientId: @js(old('recipient_id', $letter->recipient_id ?? request('to_id', ''))),
-            lastSelectedQuery: @js(old('recipient_name', $letter->recipient->name ?? request('to_name', ''))),
-            results: [],
-            open: false,
-            search() {
-                if (this.query !== this.lastSelectedQuery) {
-                    this.recipientId = '';
-                }
-
-                if (this.query.length < 1) { this.results = []; this.open = false; return; }
-                fetch(`{{ route('users.search') }}?q=${encodeURIComponent(this.query)}`)
-                    .then(r => r.json())
-                    .then(data => { this.results = data; this.open = data.length > 0; });
-            },
-            select(user) {
-                this.recipientId = user.id;
-                this.query = user.name;
-                this.lastSelectedQuery = user.name;
-                this.open = false;
-                this.results = [];
-            },
-        }">
+                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}">
                     @csrf
                     @if ($letter->exists)
                         @method('PUT')
@@ -105,6 +106,7 @@
                             <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
                         @enderror
                     </div>
+
                     <div class="mt-8">
                         <label for="body" class="sr-only">{{ __('Your letter') }}</label>
                         <textarea id="body" name="body" rows="10"
@@ -119,6 +121,48 @@
                         <p class="pp-serif" style="color: var(--ink); font-size: 1.25rem; line-height: 1.75;">
                             [{{ auth()->user()->name }}]
                         </p>
+                    </div>
+
+                    <div class="mt-6">
+                        <template x-if="enclosureUrls.length === 0">
+                            <button type="button" @click="enclosureUrls.push('')"
+                                class="pp-mono text-xs" style="color: var(--ink-soft); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">
+                                {{ __('+ Enclose a link') }}
+                            </button>
+                        </template>
+
+                        <div x-show="enclosureUrls.length > 0" x-cloak>
+                            <x-input-label :value="__('Enclosed')" />
+
+                            <div class="mt-1 space-y-2">
+                                <template x-for="(url, index) in enclosureUrls" :key="index">
+                                    <div class="flex items-center gap-2">
+                                        <span x-show="enclosureUrls.length > 1" x-cloak x-text="'#' + (index + 1)"
+                                            class="pp-mono text-xs shrink-0" style="color: var(--ink-soft); width: 1.5rem;"></span>
+                                        <input type="url" :name="`enclosures[${index}]`" placeholder="https://…"
+                                            x-model="enclosureUrls[index]" class="pp-enclosure-input flex-1">
+                                        <button type="button" @click="enclosureUrls.splice(index, 1)"
+                                            class="pp-mono text-xs shrink-0"
+                                            style="color: var(--ink-soft); background: none; border: none; cursor: pointer;"
+                                            aria-label="{{ __('Remove this link') }}">
+                                            {{ __('×') }}
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <button type="button" @click="enclosureUrls.push('')"
+                                class="pp-mono text-xs mt-2" style="color: var(--ink-soft); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">
+                                {{ __('+ Add another link') }}
+                            </button>
+
+                            @error('enclosures')
+                                <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
+                            @enderror
+                            @error('enclosures.*')
+                                <p class="mt-2 text-sm text-[var(--error-red)]">{{ __('One of those links doesn\'t look right.') }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </form>
             </div>

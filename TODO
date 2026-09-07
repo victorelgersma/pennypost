@@ -3,7 +3,11 @@ Defo
 - [ ] add notification when someone has a penny post / read or unread messages
 - [ ] create simple deploy script that runs ON the server (instead of retyping those commands)
 - [ ] allow users to download entire correspondence in PDF format
-- [ ] change font to EB Garamond of the main letter writing
+- [x] change font to EB Garamond of the main letter writing
+- [ ] user can change email address
+- [ ] add dedicated user page
+- [ ] implement end to end encryption
+- [ ] add explicit github footer link
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
 - [ ] changing email flow should send a confirmation email. 
 - [ ] change to a mail provider that doesn't keep copies in the US?

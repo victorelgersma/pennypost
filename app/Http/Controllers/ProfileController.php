@@ -102,29 +102,25 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $sent = $user->sentMessages()
-            ->with('recipient')
-            ->orderBy('created_at')
-            ->get()
-            ->map(fn ($m) => [
-                'to' => $m->recipient->name ?? __('Deleted user'),
-                'body' => $m->body,
-                'is_draft' => $m->is_draft,
-                'scheduled_for' => $m->scheduled_for?->toIso8601String(),
-                'sent_at' => $m->sent_at?->toIso8601String(),
-                'delivered_at' => $m->delivered_at?->toIso8601String(),
-            ]);
 
-        $received = $user->receivedMessages()
-            ->delivered()
-            ->with('sender')
-            ->orderBy('delivered_at')
-            ->get()
-            ->map(fn ($m) => [
-                'from' => $m->sender->name ?? __('Deleted user'),
-                'body' => $m->body,
-                'delivered_at' => $m->delivered_at?->toIso8601String(),
-            ]);
+$sent = $user->sentMessages()->with('recipient')->orderBy('created_at')->get()
+    ->map(fn ($m) => [
+        'to' => $m->recipient->name ?? __('Deleted user'),
+        'body' => $m->body,
+        'enclosures' => $m->enclosures ?? [],
+        'is_draft' => $m->is_draft,
+        'scheduled_for' => $m->scheduled_for?->toIso8601String(),
+        'sent_at' => $m->sent_at?->toIso8601String(),
+        'delivered_at' => $m->delivered_at?->toIso8601String(),
+    ]);
+
+$received = $user->receivedMessages()->delivered()->with('sender')->orderBy('delivered_at')->get()
+    ->map(fn ($m) => [
+        'from' => $m->sender->name ?? __('Deleted user'),
+        'body' => $m->body,
+        'enclosures' => $m->enclosures ?? [],
+        'delivered_at' => $m->delivered_at?->toIso8601String(),
+    ]);
 
         $export = [
             'exported_at' => now()->toIso8601String(),
