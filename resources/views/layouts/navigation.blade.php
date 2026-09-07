@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" style="background: var(--paper-card); border-bottom: 1px solid var(--line);">
+<nav x-data="{ open: false }" class="pp-app-nav" style="background: var(--paper-card); border-bottom: 1px solid var(--line);">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">

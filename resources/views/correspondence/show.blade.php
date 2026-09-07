@@ -23,6 +23,9 @@
                         style="color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px;
                                padding: 4px 10px; text-decoration: none; white-space: nowrap;">
                         {{ ($letter->delivered_at ?? $letter->sent_at)->format('j M') }}
+                        @unless ($letter->isDelivered())
+                            · {{ __('In transit') }}
+                        @endunless
                     </a>
                 @endforeach
             </div>
@@ -44,6 +47,9 @@
                                         onmouseover="this.style.color='var(--ink)'"
                                         onmouseout="this.style.color='var(--ink-soft)'">
                                         {{ ($letter->delivered_at ?? $letter->sent_at)->format('jS F') }}
+                                        @unless ($letter->isDelivered())
+                                            <br><em>{{ __('In transit') }}</em>
+                                        @endunless
                                     </a>
                                 </li>
                             @endforeach
@@ -106,10 +112,10 @@
                                                         {{ __('#:number', ['number' => $loop->iteration]) }}
                                                     </p>
                                                 @endif
-<a href="{{ $url }}" target="_blank" rel="noopener" class="pp-mono"
-   style="color: var(--ink); text-decoration: underline; text-underline-offset: 3px;">
-    {{ $url }}
-</a>
+                                                <a href="{{ $url }}" target="_blank" rel="noopener" class="pp-mono"
+                                                   style="color: var(--ink); text-decoration: underline; text-underline-offset: 3px;">
+                                                    {{ $url }}
+                                                </a>
                                             </div>
                                         @endforeach
                                     </div>
@@ -126,4 +132,3 @@
         </div>
     </div>
 </x-app-layout>
-

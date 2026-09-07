@@ -26,7 +26,7 @@
 
         <!-- Page Heading -->
         @isset($header)
-            <header style="background: var(--paper-card); border-bottom: 1px solid var(--line);">
+            <header class="pp-page-header" style="background: var(--paper-card); border-bottom: 1px solid var(--line);">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>

@@ -802,4 +802,28 @@
             4rem
         ); /* was clamp(1.5rem, 6vw, 4.5rem) */
     }
+
+
+body.pp-fullscreen-editor .pp-app-nav,
+body.pp-fullscreen-editor .pp-page-header {
+    display: none;
 }
+
+
+.pp-compose-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 4px 16px;
+}
+
+.pp-editor-fullscreen .pp-textarea-plain {
+    min-height: 60vh;
+}
+
+
+
+}
+
