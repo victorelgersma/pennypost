@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::get('/', function () {
 
 Route::view('/about', 'about')->name('about');
 Route::view('/privacy', 'privacy')->name('privacy');
+Route::get('/u/{username}', [PublicProfileController::class, 'show'])->name('profile.public');
 Route::get('/profile/delete/{user}', [ProfileController::class, 'confirmDestroy'])
     ->middleware(['signed', 'throttle:6,1'])
     ->name('profile.destroy.confirm');

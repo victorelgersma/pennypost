@@ -83,6 +83,7 @@ class ProfileController extends Controller
             'email' => 'deleted-'.$user->id.'@deleted.pennypost.invalid',
             'email_verified_at' => null,
             'remember_token' => null,
+            'username' => null,
         ])->save();
 
         $user->delete();

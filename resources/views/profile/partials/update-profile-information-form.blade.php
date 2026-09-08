@@ -25,6 +25,53 @@
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
         </div>
 
+        <div x-data="{ enabled: {{ old('username', $user->username) ? 'true' : 'false' }} }">
+            <label class="inline-flex items-center gap-2" style="cursor: pointer;">
+                <input type="checkbox" x-model="enabled" class="pp-checkbox"
+                    @change="if (!enabled) { $refs.usernameInput.value = '' }">
+                <span class="pp-field-label" style="display: inline; text-transform: none; letter-spacing: normal; font-weight: 500; color: var(--ink);">
+                    {{ __('Enable public profile') }}
+                </span>
+            </label>
+            <p class="mt-1 text-xs" style="color: var(--ink-soft);">
+                {{ __('A shareable page with your name and a way for anyone to write to you — handy for a bio link. Off by default.') }}
+            </p>
+
+            <div x-show="enabled" x-cloak class="mt-3">
+                <x-input-label for="username" :value="__('Username')" />
+                <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" x-ref="usernameInput"
+                    :value="old('username', $user->username)" autocomplete="off" placeholder="{{ __('e.g. victor') }}" />
+                <p class="mt-1 text-xs" style="color: var(--ink-soft);">
+                    {{ __('Lowercase letters, numbers, hyphens and underscores only.') }}
+                </p>
+                <x-input-error class="mt-2" :messages="$errors->get('username')" />
+
+
+@if ($user->username)
+    <div class="mt-3 flex items-center gap-3 flex-wrap" x-data="{
+            copied: false,
+            url: @js(config('pennypost.short_profile_domain') ? rtrim(config('pennypost.short_profile_domain'), '/').'/'.$user->username : route('profile.public', $user->username)),
+            copy() {
+                navigator.clipboard.writeText(this.url).then(() => {
+                    this.copied = true;
+                    setTimeout(() => this.copied = false, 2000);
+                });
+            },
+        }">
+        <button type="button" @click="copy()" class="pp-btn pp-btn-ghost" style="padding: 6px 14px; font-size: 13px;">
+            <span x-show="!copied">{{ __('Copy public profile') }}</span>
+            <span x-show="copied" x-cloak>{{ __('Copied!') }}</span>
+        </button>
+        <a href="{{ route('profile.public', $user->username) }}" target="_blank" rel="noopener"
+            class="pp-btn pp-btn-ghost" style="padding: 6px 14px; font-size: 13px;">
+            {{ __('View public profile') }}
+        </a>
+    </div>
+@endif
+
+            </div>
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
