@@ -55,3 +55,12 @@ test('users can logout', function () {
     $this->assertGuest();
     $response->assertRedirect('/');
 });
+
+test('requesting a login link for a soft-deleted account shows a friendly message instead of crashing', function () {
+    $user = User::factory()->create(['email' => 'ghost@example.com']);
+    $user->delete(); // soft delete without going through the anonymization flow
+
+    $response = $this->post('/login', ['email' => 'ghost@example.com']);
+
+    $response->assertSessionHasErrors('email');
+});

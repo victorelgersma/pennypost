@@ -9,8 +9,8 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Actions\AnonymizeUser;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -59,38 +59,19 @@ class ProfileController extends Controller
      * emailed by destroy(). Logs out the current session if it belongs
      * to this user, and invalidates any other active sessions too.
      */
-    public function confirmDestroy(Request $request, User $user): RedirectResponse
-    {
-        if ($request->user()?->id === $user->id) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
 
-        DB::table('sessions')->where('user_id', $user->id)->delete();
-
-        // Drafts are private and were never seen by anyone else — safe to
-        // remove outright, unlike sent/delivered letters.
-        $user->sentMessages()->drafts()->delete();
-
-        // Soft-delete + anonymize rather than hard-delete: the users table
-        // is still referenced by sender_id/recipient_id on any letters this
-        // person sent or received. A hard delete would cascade and take
-        // those messages down with it — including letters the OTHER person
-        // in the correspondence still has every right to keep.
-        $user->forceFill([
-            'name' => 'Deleted user',
-            'email' => 'deleted-'.$user->id.'@deleted.pennypost.invalid',
-            'email_verified_at' => null,
-            'remember_token' => null,
-            'username' => null,
-        ])->save();
-
-        $user->delete();
-
-        return redirect()->to('/')->with('status', 'account-deleted');
+public function confirmDestroy(Request $request, User $user, AnonymizeUser $anonymizeUser): RedirectResponse
+{
+    if ($request->user()?->id === $user->id) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
     }
 
+    $anonymizeUser($user);
+
+    return redirect()->to('/')->with('status', 'account-deleted');
+}
 
     /**
      * Everything this user is entitled to take with them: their account
@@ -106,7 +87,7 @@ class ProfileController extends Controller
 
 $sent = $user->sentMessages()->with('recipient')->orderBy('created_at')->get()
     ->map(fn ($m) => [
-        'to' => $m->recipient->name ?? __('Deleted user'),
+        'to' => $m->recipient->name ?? __('Deleted Account'),
         'body' => $m->body,
         'enclosures' => $m->enclosures ?? [],
         'is_draft' => $m->is_draft,
@@ -117,7 +98,7 @@ $sent = $user->sentMessages()->with('recipient')->orderBy('created_at')->get()
 
 $received = $user->receivedMessages()->delivered()->with('sender')->orderBy('delivered_at')->get()
     ->map(fn ($m) => [
-        'from' => $m->sender->name ?? __('Deleted user'),
+        'from' => $m->sender->name ?? __('Deleted Account'),
         'body' => $m->body,
         'enclosures' => $m->enclosures ?? [],
         'delivered_at' => $m->delivered_at?->toIso8601String(),
