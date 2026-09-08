@@ -15,19 +15,12 @@
 
             <div class="p-4 sm:p-8 pp-letter-card">
                 <div class="max-w-xl" x-data="{
-                    time: '',
                     countdown: '',
                     deliveryCountdown: '',
                     pickupAt: new Date('{{ $nextPickup->toIso8601String() }}').getTime(),
                     deliveryAt: new Date('{{ $nextBatch->toIso8601String() }}').getTime(),
                     tick() {
                         const now = new Date();
-                        this.time = now.toLocaleTimeString('en-GB', {
-                            timeZone: 'UTC',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                        });
 
                         this.countdown = this.formatRemaining(
                             this.pickupAt - now.getTime(),
@@ -59,34 +52,22 @@
                     }
                 }">
                     <h2 class="text-lg pp-serif font-medium" style="color: var(--ink);">
-                        {{ __('Current GMT time') }}
+                        {{ __('Next pickup') }}
                     </h2>
                     <p class="mt-1 text-sm" style="color: var(--ink-soft);">
-                        {{ __('Penny Post delivery times are always shown in GMT. This is the current time in that zone.') }}
+                        {{ __('Seal a letter before this to catch the next batch.') }}
                     </p>
-                    <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="time"></p>
+                    <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="countdown"></p>
 
                     <div class="mt-6 pt-6" style="border-top: 1px solid var(--line);">
                         <h3 class="text-sm pp-serif font-medium" style="color: var(--ink);">
-                            {{ __('Next pickup') }}
+                            {{ __('Next delivery') }}
                         </h3>
-                        <p class="mt-1 text-sm" style="color: var(--ink-soft);">
-                            {{ __('Seal a letter before this to catch the next batch.') }}
-                        </p>
-                        <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="countdown"></p>
-                    </div>
-
-                    <div class="mt-6 pt-6" style="border-top: 1px solid var(--line);">
-                        <h3 class="text-sm pp-serif font-medium" style="color: var(--ink);">
-                            {{ __('Next batch delivered') }}
-                        </h3>
-                        <p class="mt-1 pp-serif" style="color: var(--ink);">
-                            {{ __('Friday :date at 12:00 GMT.', ['date' => $nextBatch->format('j F')]) }}
-                        </p>
                         <p class="pp-mono mt-2" style="color: var(--ink); font-size: 1.5rem;" x-text="deliveryCountdown"></p>
                     </div>
                 </div>
             </div>
+
             <div class="p-4 sm:p-8 pp-letter-card">
                 <div class="max-w-xl">
                     <h2 class="text-lg pp-serif font-medium" style="color: var(--ink);">
@@ -98,6 +79,20 @@
                     <a href="{{ route('profile.export') }}" class="pp-btn pp-btn-ghost mt-4 inline-flex">
                         {{ __('Download my data') }}
                     </a>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-8 pp-letter-card">
+                <div class="max-w-xl">
+                    <h2 class="text-lg pp-serif font-medium" style="color: var(--ink);">
+                        {{ __('Download as PDF') }}
+                    </h2>
+                    <p class="mt-1 text-sm" style="color: var(--ink-soft);">
+                        {{ __('Get your correspondence as a printable PDF, formatted like the letters themselves.') }}
+                    </p>
+                    <button type="button" disabled title="{{ __('Coming soon!') }}" class="pp-btn pp-btn-ghost mt-4 inline-flex">
+                        {{ __('Download as PDF') }}
+                    </button>
                 </div>
             </div>
 
