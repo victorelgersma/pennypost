@@ -1,0 +1,144 @@
+From 3be029aff41d73acbc939854274060b8d80943e0 Mon Sep 17 00:00:00 2001
+From: Claude <assistant@anthropic.com>
+Date: Wed, 9 Sep 2026 08:13:41 +0000
+Subject: [PATCH] Revert localStorage draft autosave
+
+The Alpine init() unconditionally restored whatever was last saved
+under 'pennypost-draft-{id|new}' in localStorage, so opening a fresh
+'Write' screen (or someone else's browser session on the same
+machine) could pull in a stale draft instead of a blank letter.
+
+Pulling this out entirely rather than patching the restore condition
+- autosave-to-drafts server-side is the better fix and will replace
+this properly in a follow-up.
+---
+ resources/views/messages/create.blade.php | 55 +++--------------------
+ 1 file changed, 6 insertions(+), 49 deletions(-)
+
+diff --git a/resources/views/messages/create.blade.php b/resources/views/messages/create.blade.php
+index d4bc235..22b4f87 100644
+--- a/resources/views/messages/create.blade.php
++++ b/resources/views/messages/create.blade.php
+@@ -31,48 +31,10 @@
+                 body: @js(old('body', $letter->body ?? '')),
+                 enclosureUrls: @js(old('enclosures', $letter->enclosures ?? [])),
+                 fullscreen: false,
+-                saveTimer: null,
+-                lastLocalSaveAt: null,
+-                draftStorageKey: 'pennypost-draft-{{ $letter->id ?? 'new' }}',
+                 init() {
+                     this.$watch('fullscreen', (value) => {
+                         document.body.classList.toggle('pp-fullscreen-editor', value);
+                     });
+-
+-                    try {
+-                        const saved = localStorage.getItem(this.draftStorageKey);
+-                        if (saved) {
+-                            const data = JSON.parse(saved);
+-                            this.query = data.query ?? this.query;
+-                            this.recipientId = data.recipientId ?? this.recipientId;
+-                            this.lastSelectedQuery = this.query;
+-                            this.body = data.body ?? this.body;
+-                            this.enclosureUrls = data.enclosureUrls ?? this.enclosureUrls;
+-                            this.lastLocalSaveAt = data.savedAt ? new Date(data.savedAt) : null;
+-                        }
+-                    } catch (e) {
+-                        // Autosave restore is a convenience — if localStorage is unavailable
+-                        // or the saved data is malformed, just carry on with the server's values.
+-                    }
+-                },
+-                persistDraft() {
+-                    try {
+-                        localStorage.setItem(this.draftStorageKey, JSON.stringify({
+-                            query: this.query,
+-                            recipientId: this.recipientId,
+-                            body: this.body,
+-                            enclosureUrls: this.enclosureUrls,
+-                            savedAt: new Date().toISOString(),
+-                        }));
+-                        this.lastLocalSaveAt = new Date();
+-                    } catch (e) {
+-                        // Best-effort — private browsing or a full quota shouldn't
+-                        // break the actual letter-writing experience.
+-                    }
+-                },
+-                scheduleAutosave() {
+-                    clearTimeout(this.saveTimer);
+-                    this.saveTimer = setTimeout(() => this.persistDraft(), 800);
+                 },
+                 search() {
+                     if (this.query !== this.lastSelectedQuery) {
+@@ -90,7 +52,6 @@
+                     this.lastSelectedQuery = user.name;
+                     this.open = false;
+                     this.results = [];
+-                    this.scheduleAutosave();
+                 },
+             }" x-on:toggle-fullscreen.window="fullscreen = !fullscreen"
+             x-on:keydown.escape.window="if (fullscreen) fullscreen = false">
+@@ -126,8 +87,7 @@
+ 
+             <div class="pp-letter-plain p-8 sm:p-12" :class="{ 'pp-editor-fullscreen': fullscreen }">
+                 <form id="letter-form" method="POST"
+-                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
+-                    @submit="try { localStorage.removeItem(draftStorageKey) } catch (e) {}">
++                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}">
+                     @csrf
+                     @if ($letter->exists)
+                         @method('PUT')
+@@ -145,7 +105,7 @@
+                                 style="color: var(--ink); font-size: 1.25rem; line-height: 1.75; margin-right: 0.75rem;">{{ __('To') }}</label>
+                             <input id="recipient_name" type="text" autocomplete="off"
+                                 class="pp-input-line pp-input-line--flush pp-serif uppercase" style="width: 14rem;"
+-                                x-model="query" @input="search(); scheduleAutosave()">
++                                x-model="query" @input="search()">
+                         </div>
+                         <input type="hidden" name="recipient_id" x-model="recipientId">
+ 
+@@ -168,7 +128,6 @@ class="px-4 py-2 text-sm text-[var(--ink)] hover:bg-[var(--paper)] cursor-pointe
+                         <textarea id="body" name="body" rows="10"
+                             maxlength="{{ config('pennypost.max_letter_length') }}"
+                             x-model="body"
+-                            @input="scheduleAutosave()"
+                             class="pp-textarea-plain pp-serif mt-3 text-[1.25rem] leading-[1.75]"></textarea>
+                         @error('body')
+                             <p class="mt-2 text-sm text-[var(--error-red)]">{{ $message }}</p>
+@@ -187,14 +146,12 @@ class="pp-textarea-plain pp-serif mt-3 text-[1.25rem] leading-[1.75]"></textarea
+                 <p class="pp-mono text-xs" style="color: var(--ink-soft); margin: 0;">
+                     {{ __('Sending is final — letters can\'t be unsent or edited once sealed.') }}
+                 </p>
+-                <p x-show="lastLocalSaveAt" x-cloak class="pp-mono text-xs" style="color: var(--ink-soft); margin: 0; white-space: nowrap;"
+-                    x-text="'Saved locally at ' + (lastLocalSaveAt ? lastLocalSaveAt.toLocaleTimeString() : '')"></p>
+             </div>
+ 
+ 
+             <div class="mt-6">
+                 <template x-if="enclosureUrls.length === 0">
+-                    <button type="button" @click="enclosureUrls.push(''); scheduleAutosave()"
++                    <button type="button" @click="enclosureUrls.push('')"
+                         class="pp-mono text-xs" style="color: var(--ink-soft); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">
+                         {{ __('+ Enclose a link') }}
+                     </button>
+@@ -209,8 +166,8 @@ class="pp-mono text-xs" style="color: var(--ink-soft); background: none; border:
+                                 <span x-show="enclosureUrls.length > 1" x-cloak x-text="'#' + (index + 1)"
+                                     class="pp-mono text-xs shrink-0" style="color: var(--ink-soft); width: 1.5rem;"></span>
+                                 <input type="url" :name="`enclosures[${index}]`" form="letter-form" placeholder="https://…"
+-                                    x-model="enclosureUrls[index]" @input="scheduleAutosave()" class="pp-enclosure-input flex-1">
+-                                <button type="button" @click="enclosureUrls.splice(index, 1); scheduleAutosave()"
++                                    x-model="enclosureUrls[index]" class="pp-enclosure-input flex-1">
++                                <button type="button" @click="enclosureUrls.splice(index, 1)"
+                                     class="pp-mono text-xs shrink-0"
+                                     style="color: var(--ink-soft); background: none; border: none; cursor: pointer;"
+                                     aria-label="{{ __('Remove this link') }}">
+@@ -220,7 +177,7 @@ class="pp-mono text-xs shrink-0"
+                         </template>
+                     </div>
+ 
+-                    <button type="button" @click="enclosureUrls.push(''); scheduleAutosave()"
++                    <button type="button" @click="enclosureUrls.push('')"
+                         class="pp-mono text-xs mt-3" style="color: var(--ink-soft); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">
+                         {{ __('+ Add another link') }}
+                     </button>
+-- 
+2.43.0
+
