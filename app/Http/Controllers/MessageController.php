@@ -78,6 +78,7 @@ class MessageController extends Controller
 
         abort_if($person->id === $userId, 404);
 
+
         $letters = Message::query()
             ->sent()
             ->where(function ($query) use ($userId, $person) {
@@ -90,7 +91,7 @@ class MessageController extends Controller
             ->where(function ($query) use ($userId) {
                 $query->whereNotNull('delivered_at')->orWhere('sender_id', $userId);
             })
-            ->orderByRaw('coalesce(delivered_at, sent_at) desc')
+            ->orderByDesc('sent_at')
             ->get();
 
         return view('correspondence.show', [

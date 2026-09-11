@@ -22,7 +22,7 @@
                     <a href="#letter-{{ $letter->id }}" class="pp-mono text-xs shrink-0"
                         style="color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px;
                                padding: 4px 10px; text-decoration: none; white-space: nowrap;">
-                        {{ ($letter->delivered_at ?? $letter->sent_at)->format('j M') }}
+                        {{ $letter->sent_at->format('j M') }}
                         @unless ($letter->isDelivered())
                             · {{ __('In transit') }}
                         @endunless
@@ -46,7 +46,7 @@
                                         style="color: var(--ink-soft); text-decoration: none; line-height: 1.5;"
                                         onmouseover="this.style.color='var(--ink)'"
                                         onmouseout="this.style.color='var(--ink-soft)'">
-                                        {{ ($letter->delivered_at ?? $letter->sent_at)->format('jS F') }}
+                                        {{ $letter->sent_at->format('jS F') }}
                                         @unless ($letter->isDelivered())
                                             <br><em>{{ __('In transit') }}</em>
                                         @endunless
