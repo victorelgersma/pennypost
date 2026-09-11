@@ -6,15 +6,18 @@
                 {{ $letter->exists ? __('Edit your letter') : __('Write a letter') }}
             </h2>
 
-            <div class="flex items-center gap-3" x-data>
-                <button type="button" @click="$dispatch('toggle-fullscreen')" class="pp-btn pp-btn-ghost">
+             <div class="flex items-center gap-3" x-data="{ submitting: false }"
+                x-on:letter-submitting.window="submitting = true">
+                <button type="button" @click="$dispatch('toggle-fullscreen')" class="pp-btn pp-btn-ghost"
+                    :disabled="submitting">
                     {{ __('Full screen') }}
                 </button>
-                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost">
+                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost"
+                    :disabled="submitting">
                     {{ __('Save draft') }}
                 </button>
                 <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid"
-                    style="padding: 11px 28px; font-size: 15px;">
+                    style="padding: 11px 28px; font-size: 15px;" :disabled="submitting">
                     {{ __('Seal & send') }}
                 </button>
             </div>
@@ -31,6 +34,7 @@
                 body: @js(old('body', $letter->body ?? '')),
                 enclosureUrls: @js(old('enclosures', $letter->enclosures ?? [])),
                 fullscreen: false,
+                submitting: false,
                 init() {
                     this.$watch('fullscreen', (value) => {
                         document.body.classList.toggle('pp-fullscreen-editor', value);
@@ -87,7 +91,8 @@
 
             <div class="pp-letter-plain p-8 sm:p-12" :class="{ 'pp-editor-fullscreen': fullscreen }">
                 <form id="letter-form" method="POST"
-                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}">
+                    action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
+                    @submit="submitting = true; $dispatch('letter-submitting')">
                     @csrf
                     @if ($letter->exists)
                         @method('PUT')
@@ -193,10 +198,13 @@
 
             <div x-show="fullscreen" x-cloak class="flex justify-end gap-3 mt-6 pt-6"
                 style="border-top: 1px solid var(--line);">
-                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost">
+
+                                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost"
+                    :disabled="submitting">
                     {{ __('Save draft') }}
                 </button>
-                <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid">
+                <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid"
+                    :disabled="submitting">
                     {{ __('Seal & send') }}
                 </button>
             </div>
@@ -209,11 +217,17 @@
                         {{ __('Sending is final. Once a letter is sealed there is no way to unsend, unseal, or edit it — not even before delivery.') }}
                     </p>
                     <div class="mt-6 flex justify-end gap-3">
-                        <button type="button" class="pp-btn pp-btn-ghost" @click="$dispatch('close-modal', 'confirm-send')">
+                        <button type="button" class="pp-btn pp-btn-ghost" :disabled="submitting"
+                            @click="$dispatch('close-modal', 'confirm-send')">
                             {{ __('Keep editing') }}
                         </button>
-                        <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid">
-                            {{ __('Yes, seal & send') }}
+                        <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid"
+                            :disabled="submitting">
+                            <span x-show="!submitting" x-cloak>{{ __('Yes, seal & send') }}</span>
+                            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
+                                <span class="pp-spinner"></span>
+                                {{ __('Sealing…') }}
+                            </span>
                         </button>
                     </div>
                 </div>

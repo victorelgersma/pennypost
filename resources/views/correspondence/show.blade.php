@@ -72,16 +72,11 @@
                             <div id="letter-{{ $letter->id }}" class="pp-letter-entry p-8 sm:p-12"
                                 style="scroll-margin-top: 24px;">
 
+
                                 <div class="text-right">
-                                    @if ($letter->isDelivered())
-                                        <p class="pp-serif" style="color: var(--ink-soft);">
-                                            {{ $letter->delivered_at->format('j F Y') }}
-                                        </p>
-                                    @else
-                                        <p class="pp-serif" style="color: var(--ink-soft);">
-                                            {{ $letter->sent_at->format('j F Y') }}
-                                        </p>
-                                    @endif
+                                    <p class="pp-serif" style="color: var(--ink-soft);">
+                                        {{ $letter->sent_at->format('j F Y') }}
+                                    </p>
                                 </div>
 
                                 <p class="pp-serif mt-6 text-center"
