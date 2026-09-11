@@ -97,6 +97,7 @@ class MessageController extends Controller
         return view('correspondence.show', [
             'person' => $person,
             'letters' => $letters,
+            'deliveredLetters' => $letters->filter->isDelivered()->values(),
         ]);
     }
 

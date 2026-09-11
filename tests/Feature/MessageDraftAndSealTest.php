@@ -174,7 +174,8 @@ test('a sealed letter shows up in its correspondence thread, but a draft to the 
     $response = $this->actingAs($user)->get(route('correspondence.show', $recipient));
 
     $response->assertOk();
-    $response->assertSee('A real sealed letter.');
+    $response->assertSee('Sealed');
+    $response->assertDontSee('A real sealed letter.');
     $response->assertDontSee('Still just a draft.');
 });
 
@@ -248,7 +249,8 @@ it('full draft, edit, and seal lifecycle works end to end — and sending is fin
 
     // 7. The sender can see their own sealed-but-undelivered letter in the
     // thread (sender-visibility rule), even before delivery.
-    $this->actingAs($sender)->get(route('correspondence.show', $recipient))
+     $this->actingAs($sender)->get(route('correspondence.show', $recipient))
         ->assertOk()
-        ->assertSee('Revised draft, much better now.');
+        ->assertDontSee('Revised draft, much better now.')
+        ->assertSee('Sealed');
 });

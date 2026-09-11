@@ -16,16 +16,14 @@
     <div class="py-12">
         <div class="mx-auto" style="max-width: 74rem; padding-inline: clamp(1.5rem, 6vw, 4rem);">
 
-        @if ($letters->isNotEmpty())
+
+        @if ($deliveredLetters->isNotEmpty())
             <div class="md:hidden mb-6 flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: none;">
-                @foreach ($letters as $letter)
+                @foreach ($deliveredLetters as $letter)
                     <a href="#letter-{{ $letter->id }}" class="pp-mono text-xs shrink-0"
                         style="color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px;
                                padding: 4px 10px; text-decoration: none; white-space: nowrap;">
                         {{ $letter->sent_at->format('j M') }}
-                        @unless ($letter->isDelivered())
-                            · {{ __('In transit') }}
-                        @endunless
                     </a>
                 @endforeach
             </div>
@@ -33,23 +31,20 @@
 
 
             <div class="flex items-start gap-10">
-                @if ($letters->isNotEmpty())
+                                @if ($deliveredLetters->isNotEmpty())
                     <nav class="hidden md:block shrink-0"
                         style="width: 150px; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto;">
                         <p class="pp-mono text-xs mb-3" style="color: var(--ink-soft); letter-spacing: 0.08em;">
                             {{ __('JUMP TO') }}
                         </p>
                         <ul class="space-y-2">
-                            @foreach ($letters as $letter)
+                            @foreach ($deliveredLetters as $letter)
                                 <li>
                                     <a href="#letter-{{ $letter->id }}" class="pp-mono text-xs block"
                                         style="color: var(--ink-soft); text-decoration: none; line-height: 1.5;"
                                         onmouseover="this.style.color='var(--ink)'"
                                         onmouseout="this.style.color='var(--ink-soft)'">
                                         {{ $letter->sent_at->format('jS F') }}
-                                        @unless ($letter->isDelivered())
-                                            <br><em>{{ __('In transit') }}</em>
-                                        @endunless
                                     </a>
                                 </li>
                             @endforeach
@@ -68,10 +63,10 @@
                     @endif
 
                     <div class="pp-letter-plain">
-                        @forelse ($letters as $letter)
+                                                @forelse ($letters as $letter)
+                            @if ($letter->isDelivered())
                             <div id="letter-{{ $letter->id }}" class="pp-letter-entry p-8 sm:p-12"
                                 style="scroll-margin-top: 24px;">
-
 
                                 <div class="text-right">
                                     <p class="pp-serif" style="color: var(--ink-soft);">
@@ -116,6 +111,13 @@
                                     </div>
                                 @endif
                             </div>
+                            @else
+                            <div class="pp-letter-entry p-8 sm:p-12 text-center" style="scroll-margin-top: 24px;">
+                                <p class="pp-serif italic" style="color: var(--ink-soft); font-size: 1.1rem;">
+                                    {{ __('Sealed — arriving :date', ['date' => $letter->scheduled_for->format('j F Y')]) }}
+                                </p>
+                            </div>
+                            @endif
                         @empty
                             <div class="p-8 sm:p-12 text-sm" style="color: var(--ink-soft);">
                                 {{ __('Nothing here yet.') }}
