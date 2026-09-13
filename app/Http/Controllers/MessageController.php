@@ -165,8 +165,10 @@ class MessageController extends Controller
 
 protected function save(Request $request, Message $message): RedirectResponse
 {
-    $wantsToSend = $request->input('intent', 'send') === 'send';
-
+    $intent = $request->input('intent', 'draft');
+    abort_unless(in_array($intent, ['draft', 'send'], true), 422);
+    $wantsToSend = $intent === 'send';
+    
     $notPennyPostMember = "That doesn't look like a Penny Post member — pick someone from the suggestions.";
 
     // Blank rows from the "add another link" UI shouldn't count as

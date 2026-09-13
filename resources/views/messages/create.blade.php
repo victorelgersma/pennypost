@@ -91,9 +91,11 @@
 
             <div class="pp-letter-plain p-8 sm:p-12" :class="{ 'pp-editor-fullscreen': fullscreen }">
                 <form id="letter-form" method="POST"
+
                     action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
                     @submit="submitting = true; $dispatch('letter-submitting')">
                     @csrf
+                   <input type="hidden" name="intent" value="draft">
                     @if ($letter->exists)
                         @method('PUT')
                     @endif
