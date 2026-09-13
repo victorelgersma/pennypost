@@ -8,6 +8,7 @@ test('a user can compose a message to another user', function () {
     $recipient = User::factory()->create();
 
     $response = $this->actingAs($sender)->post('/messages', [
+        'intent' => 'send',
         'recipient_id' => $recipient->id,
         'body' => 'Hey, hope you are well!',
     ]);
