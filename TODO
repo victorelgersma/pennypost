@@ -1,5 +1,6 @@
 Defo
 
+- [ ] remove notice for Irina and Albena (on 20/09)
 - [ ] add notification when someone has a penny post / read or unread messages
 - [ ] create simple deploy script that runs ON the server (instead of retyping those commands)
 - [ ] allow users to download entire correspondence in PDF format
@@ -9,7 +10,7 @@ Defo
 - [ ] implement end to end encryption
 - [ ] add explicit github footer link
 - [ ] move my automated email mailer to the subdomain `victor@pennypost.vjbe.net` for reputation isolation.
-- [ ] changing email flow should send a confirmation email. 
+- [ ] changing email flow should send a confirmation email.
 - [ ] change to a mail provider that doesn't keep copies in the US?
 - [ ] add save to local storage
 - [ ] mail should go out on wednesdays if it arrives on fridays
@@ -17,33 +18,33 @@ Defo
 - [ ] add "circulars" feature - a group chat (mandatory name, messages get sent to everyone in the group by default - new users can see all previous messages)
 - [ ] add italics / underline / some form of emphasis with command I (markdown italics?)
 - [ ] create back up of database
-- [ ] host special font for correspondence. 
+- [ ] host special font for correspondence.
 - [ ] create loading state for button when I type the email
-- [ ] custom fonts. 
+- [ ] custom fonts.
 - [ ] make write full screen
 - [ ] lines should go under /create
-- [ ] make sure names are unique. 
+- [ ] make sure names are unique.
 - [ ] let people opt out of the public directory - but still be reachable (in that case I need to introduce usernames?)
 - [ ] in fact since "Victor" is deleted it should just show as "deleted user" for me
 - [ ] add a 'remember me' feature
 - [ ] allow users to change their e-mail
 - [ ] change delivery time to close of play on Monday (instead of 12pm)
-- [ ] start looking at server usage by downloading some hetzner app 
+- [ ] start looking at server usage by downloading some hetzner app
 - [ ] I should still have two buttons - Log in and Register -> instead of one "Get Started"  - the difference is that in the Register you have a name.
-- [ ] fix 500 on emails like `victoelgerma@fastmail.com` - should instead say something like "this user wasn't recognized" 
+- [ ] fix 500 on emails like `victoelgerma@fastmail.com` - should instead say something like "this user wasn't recognized"
 - [ ] point out in the About page that Google, Facebook, etc can also read your mail
-- [ ] the interface is dark, but the letters are black on white - like the internet archive. 
+- [ ] the interface is dark, but the letters are black on white - like the internet archive.
 - [ ] we should have no color as a rule. Just black and white (greyscale). Red should only be for severe error messages
 - [ ] add ability to download your entire correspondence (text? markdown? Pdf? how?)
 - [ ] on the about page say "Hey google is also not E2E encrypted"
 - [ ] if you are looking for encrypted E2E email look at Tuta
-- [x] sealed letters should still have the date in the top right corner! 
+- [x] sealed letters should still have the date in the top right corner!
 
 Maybe
 
 - [ ] After feedback: Bring back (optional) passwords
-- [ ] User story: hide email input when user email gets sent to gmail. 
-- [ ] Add both email and password. 
+- [ ] User story: hide email input when user email gets sent to gmail.
+- [ ] Add both email and password.
 
 Done
 
@@ -54,7 +55,7 @@ Done
 - [x] bugfix settings page
 - [x] add separate login and sign up buttons
 - [x] go black and white and lithography
-- [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo". 
+- [x] once I click on 'Victor' I should not be able to edit the "To" field and send it to "Victo".
 - [x] sometimes I get a 500 when I send an email from stop@fastmail.com
 - [x] add an about page with an email to the developer (pennypost@vjbe.net)
 - [x] add more letters in the seed database
@@ -64,35 +65,35 @@ Done
       only works for single-user vaults (like Ente), not two-party mail. Given
       Penny Post's threat model (personal letters, mostly-trusted users) doesn't
       clearly call for it, and it would meaningfully complicate circulars, drafts,
-      and the account-deletion flow — decided not to pursue for now. It would be good to add this to the About page though. 
+      and the account-deletion flow — decided not to pursue for now. It would be good to add this to the About page though.
 - [x] add footer with "Penny Post is under active development. Found an issue? Mail us at pennypost@vjbe.net or raise an issue on Github.
 - [x] add github page to about page
 - [x] add ENV Vars to allow e-mail send for forgot password flow
-- [x] verify email address before registering a user? 
-- [x] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level. 
-- [x] make it email (passwordless) authentication 
+- [x] verify email address before registering a user?
+- [x] "My correspondence" should group your letters by correspondence. i.e it should show different users with which you have a correspondence at the top level, rather than letters at the top level.
+- [x] make it email (passwordless) authentication
 - [x] remove explicit 'SENT' page
 - [x] add favicon
 - [x] change "Directory" to "User directory"
 - [x] replace "Unseal" with "Unseal and Edit"
 - [x] replace "Inbox" with "My correspondence"|
-- [x] replace "Laravel" instead of "Penny Post" 
+- [x] replace "Laravel" instead of "Penny Post"
 - [x] Make the github public
-- [x] Create a searchable User directory. It should display when accounts were registered. 
+- [x] Create a searchable User directory. It should display when accounts were registered.
 - [x] fix unit tests about letters being sent on a Sunday / Friday instead of Monday / Friday
-- [x] remove the dark mode theme and just invest in the light mode theme, nothing else. 
+- [x] remove the dark mode theme and just invest in the light mode theme, nothing else.
 - [x] write test for draft / unseal paths
 - [x] replace laravel logos with pennypost logos
-- [x] make sure you can edit the message (draft it) rather than it scheduling send. 
-- [x] next post should actually say when the message will get delivered, not when it gets posted. 
+- [x] make sure you can edit the message (draft it) rather than it scheduling send.
+- [x] next post should actually say when the message will get delivered, not when it gets posted.
 - [x] slighly too wide now.
 - [x] /write should not say "Your Letter"
 - [x] /correspondence should just be full page by default even when no text
 - [x] relative size of letter text and background should be the same
-- [x] basically get a word zoom going. 
+- [x] basically get a word zoom going.
 - [x] add basic dark mode
 - [x] I should have two colors, not three?
-- [x] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing 
+- [x] once I have entered and pressed "send" on the email the insert email box should disappear. It is confusing
 
 - [x] have a draft option and a send option, no unsend
 

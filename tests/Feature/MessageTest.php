@@ -79,3 +79,36 @@ test('the delivery command marks due messages as delivered', function () {
     expect($due->fresh()->delivered_at)->not->toBeNull();
     expect($notYetDue->fresh()->delivered_at)->toBeNull();
 });
+
+test('omitting intent entirely defaults to saving a draft, never sending', function () {
+    $sender = User::factory()->create();
+    $recipient = User::factory()->create();
+
+    $response = $this->actingAs($sender)->post('/messages', [
+        // no 'intent' key at all — simulates the field being dropped from
+        // the submission (e.g. a submit button losing its form association)
+        'recipient_id' => $recipient->id,
+        'body' => 'Meant to keep drafting this.',
+    ]);
+
+    $message = Message::first();
+
+    $response->assertRedirect(route('messages.edit', $message));
+    expect($message->is_draft)->toBeTrue();
+    expect($message->sent_at)->toBeNull();
+    expect($message->scheduled_for)->toBeNull();
+});
+
+test('an unrecognized intent value is rejected rather than falling through to send', function () {
+    $sender = User::factory()->create();
+    $recipient = User::factory()->create();
+
+    $response = $this->actingAs($sender)->post('/messages', [
+        'intent' => 'delete-everything', // garbage / tampered value
+        'recipient_id' => $recipient->id,
+        'body' => 'This should never send.',
+    ]);
+
+    $response->assertStatus(422);
+    expect(Message::count())->toBe(0);
+});
