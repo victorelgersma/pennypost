@@ -1,4 +1,3 @@
-
 <x-app-layout>
     <x-slot name="header">
         <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;">
@@ -12,8 +11,8 @@
                     :disabled="submitting">
                     {{ __('Full screen') }}
                 </button>
-                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost"
-                    :disabled="submitting">
+                <button type="button" class="pp-btn pp-btn-ghost" :disabled="submitting"
+                    @click="document.getElementById('intent-field').value = 'draft'; document.getElementById('letter-form').requestSubmit();">
                     {{ __('Save draft') }}
                 </button>
                 <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid"
@@ -91,11 +90,10 @@
 
             <div class="pp-letter-plain p-8 sm:p-12" :class="{ 'pp-editor-fullscreen': fullscreen }">
                 <form id="letter-form" method="POST"
-
                     action="{{ $letter->exists ? route('messages.update', $letter) : route('messages.store') }}"
                     @submit="submitting = true; $dispatch('letter-submitting')">
                     @csrf
-                   <input type="hidden" name="intent" value="draft">
+                    <input type="hidden" name="intent" id="intent-field" value="draft">
                     @if ($letter->exists)
                         @method('PUT')
                     @endif
@@ -201,8 +199,8 @@
             <div x-show="fullscreen" x-cloak class="flex justify-end gap-3 mt-6 pt-6"
                 style="border-top: 1px solid var(--line);">
 
-                                <button type="submit" name="intent" value="draft" form="letter-form" class="pp-btn pp-btn-ghost"
-                    :disabled="submitting">
+                <button type="button" class="pp-btn pp-btn-ghost" :disabled="submitting"
+                    @click="document.getElementById('intent-field').value = 'draft'; document.getElementById('letter-form').requestSubmit();">
                     {{ __('Save draft') }}
                 </button>
                 <button type="button" @click="$dispatch('open-modal', 'confirm-send')" class="pp-btn pp-btn-solid"
@@ -223,8 +221,8 @@
                             @click="$dispatch('close-modal', 'confirm-send')">
                             {{ __('Keep editing') }}
                         </button>
-                        <button type="submit" name="intent" value="send" form="letter-form" class="pp-btn pp-btn-solid"
-                            :disabled="submitting">
+                        <button type="button" class="pp-btn pp-btn-solid" :disabled="submitting"
+                            @click="document.getElementById('intent-field').value = 'send'; document.getElementById('letter-form').requestSubmit();">
                             <span x-show="!submitting" x-cloak>{{ __('Yes, seal & send') }}</span>
                             <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                                 <span class="pp-spinner"></span>
@@ -249,4 +247,3 @@
         </div>
     </div>
 </x-app-layout>
-
